@@ -17,4 +17,8 @@ if (!configPath) {
 const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
 const compilerOptions = ts.parseJsonConfigFileContent(configFile.config, ts.sys, './');
 
+if (process.argv.includes('--production')) {
+    compilerOptions.options.sourceMap = false;
+}
+
 compile(compilerOptions.fileNames, compilerOptions.options);

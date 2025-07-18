@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'  # Triggers only when a tag like v1.0.0 is pushed
+      - 'v*'  # Triggers when tag like v1.0.0 is pushed
 
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js  # Optional: change based on your project type
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
@@ -24,21 +24,42 @@ jobs:
       - name: Build Project
         run: npm run build
 
-      - name: Create Release
+      - name: Package dist/ into release.zip
+        run: |
+          zip -r release.zip dist
+
+      - name: Create GitHub Release and Upload
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
+          files: release.zip
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Artifact to Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/**  # Adjust path to your build output
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: Download latest release
+        run: |
+          echo "Downloading latest release..."
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          DOWNLOAD_URL=$(echo "$LATEST_RELEASE" | jq -r '.assets[] | select(.name == "release.zip") | .browser_download_url')
+
+          echo "Release URL: $DOWNLOAD_URL"
+
+          mkdir -p app && cd app
+          curl -L -o release.zip "$DOWNLOAD_URL"
+          unzip -o release.zip
+          cd ..
+
+      - name: Run with PM2
+        run: |
+          cd app
+          pm2 delete my-app || true
+          pm2 start dist/index.js
 

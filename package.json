@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "ts-node scripts/build.ts && tsc-alias",
+    "build": "ts-node scripts/build.ts --production && tsc-alias && cp -r node_modules dist && cp -r prisma dist",
     "start:dev": "nodemon",
     "start:prod": "node dist/index.js",
     "add_endpoint": "ts-node ./scripts/add-endpoint.ts",
