@@ -56,8 +56,11 @@ jobs:
 
           echo "Download URL: $DOWNLOAD_URL"
 
-          curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -o release.zip "$DOWNLOAD_URL"
+          curl -L \
+            -H "Authorization: Bearer <YOUR_TOKEN>" \
+            -H "Accept: application/octet-stream" \
+            -o release.zip \
+            "$DOWNLOAD_URL"
 
       - name: Unzip Release
         run: |
