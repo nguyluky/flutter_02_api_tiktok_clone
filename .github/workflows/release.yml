@@ -66,7 +66,24 @@ jobs:
         run: |
           unzip -o release.zip -d app
 
+      - name: EnvSetup
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> app/dist/.env
+          echo "PORT=${{ secrets.PORT }}" >> app/dist/.env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> app/dist/.env
+          echo "JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }}" >> app/dist/.env
+          echo "TWO_FACTOR_SECRET=${{ secrets.TWO_FACTOR_SECRET }}" >> app/dist/.env
+          echo "TWO_FACTOR_EXPIRATION=${{ secrets.TWO_FACTOR_EXPIRATION }}" >> app/dist/.env
+          echo "EMAIL_SECRET=${{ secrets.EMAIL_SECRET }}" >> app/dist/.env
+          echo "REFRESH_TOKEN_EXPIRATION=${{ secrets.REFRESH_TOKEN_EXPIRATION }}" >> app/dist/.env
+          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> app/dist/.env
+          echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> app/dist/.env
+          echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> app/dist/.env
+          echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> app/dist/.env
+          echo "ENVIRONMENT SETUP COMPLETE"
+
       - name: Install & Restart with PM2
         run: |
           cd app/dist
-          pm2 start index.js
+          pm2 stop tiktok-live || true
+          pm2 start index.js --name "tiktok-live"
