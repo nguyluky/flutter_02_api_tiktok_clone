@@ -5,9 +5,9 @@ import { IsArray, IsNumber, IsObject, IsString, toSchema } from "@lib/type_decla
 
 export class videosReqBody {}
 export class videosReqQuery {
-    @IsNumber()
+    @IsNumber({coerce: true,min: 1})
     page: number = 1;
-    @IsNumber()
+    @IsNumber({coerce: true,min: 1})
     limit: number = 10;
 }
 export class videosReqParams {

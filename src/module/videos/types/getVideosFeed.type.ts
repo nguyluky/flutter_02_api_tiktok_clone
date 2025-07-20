@@ -5,7 +5,7 @@ import { Formats, IsNumber, IsObject, IsString } from "@lib/type_declaration";
 
 export class getVideosFeedReqBody {}
 export class getVideosFeedReqQuery {
-    @IsNumber()
+    @IsNumber({coerce: true, min: 1})
     limit: number = 10;
 }
 

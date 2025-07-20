@@ -6,9 +6,9 @@ import { IsArray, IsNumber, IsObject, IsString, toSchema } from "@lib/type_decla
 
 export class getMessageReqBody {}
 export class getMessageReqQuery {
-    @IsNumber()
+    @IsNumber({coerce: true,min: 1})
     page: number = 1;
-    @IsNumber()
+    @IsNumber({coerce: true,min: 1})
     limit: number = 10;
 }
 export class getMessageReqParams {

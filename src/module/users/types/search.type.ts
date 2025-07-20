@@ -12,9 +12,9 @@ export class searchReqQuery {
         value: ["user", "post"],
     })
     type: "user" | "post" = "post"; // Default to "post" if not provided
-    @IsNumber()
+    @IsNumber({coerce: true, min: 1})
     page: number = 1;
-    @IsNumber()
+    @IsNumber({coerce: true, min: 1})
     limit: number = 10;
 }
 export class searchReqParams {}
