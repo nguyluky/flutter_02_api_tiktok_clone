@@ -38,7 +38,7 @@ const swagger = {
             "description": "Local development server"
         },
         {
-            "url": "https://course-swap.example.com",
+            "url": "https://test.tkbsgusort.id.vn",
             "description": "Production server"
         }
     ],

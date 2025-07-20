@@ -11,7 +11,7 @@
       "description": "Local development server"
     },
     {
-      "url": "https://course-swap.example.com",
+      "url": "https://test.tkbsgusort.id.vn",
       "description": "Production server"
     }
   ],
@@ -54,7 +54,6 @@
           },
           "required": true
         },
-        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -158,7 +157,6 @@
           },
           "required": true
         },
-        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -267,20 +265,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
-        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -416,19 +400,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "query",
@@ -597,19 +568,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -659,13 +617,13 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-18T06:45:42.267Z",
+                          "default": "2025-07-20T02:48:13.866Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                         },
                         "updatedAt": {
-                          "default": "2025-07-18T06:45:42.267Z",
+                          "default": "2025-07-20T02:48:13.866Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -787,7 +745,6 @@
           },
           "required": true
         },
-        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -806,12 +763,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }
@@ -861,19 +813,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -903,12 +842,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }
@@ -958,19 +892,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -1000,12 +921,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }
@@ -1084,19 +1000,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -1229,20 +1132,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
-        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -1345,19 +1234,6 @@
         "tags": [
           "UsersController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "query",
@@ -1519,19 +1395,6 @@
         "tags": [
           "VideosController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "query",
@@ -1692,7 +1555,6 @@
           },
           "required": true
         },
-        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -1863,19 +1725,6 @@
         "tags": [
           "VideosController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -1988,19 +1837,6 @@
         "tags": [
           "LikeController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -2030,12 +1866,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }
@@ -2114,19 +1945,6 @@
         "tags": [
           "LikeController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -2156,12 +1974,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }
@@ -2240,19 +2053,6 @@
         "tags": [
           "LikeController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -2458,7 +2258,7 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-18T06:45:42.272Z",
+                          "default": "2025-07-20T02:48:13.870Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -2573,19 +2373,6 @@
         "tags": [
           "CommentsController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -2720,19 +2507,6 @@
         "tags": [
           "CommentsController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -2762,12 +2536,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }
@@ -2846,19 +2615,6 @@
         "tags": [
           "ChatsController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -2888,12 +2644,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }
@@ -2909,20 +2660,6 @@
         "tags": [
           "ChatsController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
-        "parameters": [],
         "responses": {
           "200": {
             "content": {
@@ -3070,19 +2807,6 @@
         "tags": [
           "ChatsController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "query",
@@ -3182,19 +2906,6 @@
         "tags": [
           "ChatsController"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {},
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": true
-        },
         "parameters": [
           {
             "in": "path",
@@ -3224,12 +2935,7 @@
                       "type": "string",
                       "description": "Human-readable error message"
                     },
-                    "data": {
-                      "$schema": "https://json-schema.org/draft/2020-12/schema",
-                      "type": "object",
-                      "properties": {},
-                      "additionalProperties": false
-                    }
+                    "data": null
                   },
                   "required": []
                 }

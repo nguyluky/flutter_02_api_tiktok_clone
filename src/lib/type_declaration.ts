@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import * as z from "zod/v4";
 import { PropertyKey, wa } from "./PropertyKey";
+import { UnauthorizedError } from "@utils/exception";
 
 // Khóa metadata cho schema
 const SCHEMA_METADATA_KEY = Symbol("schema");
@@ -186,7 +187,7 @@ export function getContextType(target: any): string | undefined {
 
 
 // Hàm toSchema để tạo Zod schema từ class
-export function toSchema<T>(target: new () => T): z.ZodObject<any> {
+export function toSchema<T>(target: new () => T): z.ZodObject<any> | null {
   const schemaObject: Record<string, z.ZodTypeAny> = {};
 
   // Tạo một đối tượng metadata giả để truy cập
@@ -201,15 +202,24 @@ export function toSchema<T>(target: new () => T): z.ZodObject<any> {
 
   }
 
+  if (Object.keys(schemaObject).length === 0) {
+      return null;
+  }
+
   return z.object(schemaObject);
 }
 
 export function toJsonSchema<T>(target: (new () => T) | (new () => T)[]) {
+
     if (Array.isArray(target)) {
-        let b = target.map(e => toSchema(e) )
+        let b = target.map(e => toSchema(e) ).filter(e => e !== null);
         return z.toJSONSchema(z.union(b));
     }
     const zod_schema = toSchema(target);
+
+    if (!zod_schema) {
+        return null;
+    }
     
     return z.toJSONSchema(zod_schema);
 }

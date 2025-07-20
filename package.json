@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "ts-node scripts/build.ts --production && tsc-alias && cp -r node_modules dist && cp -r prisma dist",
+    "build": "ts-node scripts/build.ts --production && tsc-alias && cp -r prisma dist && cp pakage.json dist",
     "start:dev": "nodemon",
     "start:prod": "node dist/index.js",
     "add_endpoint": "ts-node ./scripts/add-endpoint.ts",

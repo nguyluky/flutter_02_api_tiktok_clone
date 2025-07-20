@@ -16,10 +16,10 @@ function convertToZodSchemas(schemas: ApiSchemas): { [key: string]: z.ZodTypeAny
     for (const [key, value] of Object.entries(schemas)) {
         if (key === "res") continue;
         if (Array.isArray(value)) {
-            const sch = value.map((e) => toSchema(e));
+            const sch = value.map((e) => toSchema(e)).filter((e) => e !== null);
             schema_zod[key] = z.union(sch);
         } else {
-            schema_zod[key] = toSchema(value);
+            schema_zod[key] = toSchema(value)!;
         }
     }
     return schema_zod;

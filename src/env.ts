@@ -49,7 +49,22 @@ const EnvShema = toSchema(Env);
 
 config()
 
-const env = (EnvShema.parse(process.env) as any) as Env;
+const parseEnv = EnvShema.safeParse(process.env)
+
+if (!parseEnv.success) {
+    // format the error messages
+
+    console.error("Environment variable validation failed:");
+
+    parseEnv.error.issues.forEach(error => {
+        console.error(`- ${error.path.join('.')} : ${error.message}`);
+    });
+    console.error("Please check your .env file or environment variables.");
+    
+    process.exit(1);
+}
+
+const env = (parseEnv.data as any) as Env;
 
 export default env;
 
