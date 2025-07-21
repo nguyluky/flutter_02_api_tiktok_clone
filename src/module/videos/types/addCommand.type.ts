@@ -3,6 +3,7 @@ import { ApiRequestStatus } from "@lib/httpMethod";
 import { Request } from "express";
 import { RequestWithUser } from "@lib/toRouter";
 import { Formats, IsObject, IsString } from "@lib/type_declaration";
+import { User } from "./share.type";
 
 export class addCommandReqBody {
     @IsString()
@@ -12,16 +13,6 @@ export class addCommandReqQuery {}
 export class addCommandReqParams {
     @IsString()
     id: string;
-}
-
-class userCommandData {
-    @IsString()
-    id: string;
-
-    @IsString()
-    username: string;
-    @IsString()
-    avatarUrl: string;
 }
 
 export @ApiRequestStatus({
@@ -37,14 +28,14 @@ export @ApiRequestStatus({
     @IsString({format: Formats["iso.datetime"]})
     createdAt: string;
 
-    @IsObject(userCommandData)
-    user: userCommandData;
+    @IsObject(User)
+    user: User;
 
     constructor(data?: {
         id: string;
         content: string;
         createdAt: string;
-        user: userCommandData;
+        user: User;
     }) {
         if (data) {
             this.id = data.id;

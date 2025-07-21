@@ -2,23 +2,13 @@ import "reflect-metadata";
 import { ApiRequestStatus } from "@lib/httpMethod";
 import { Request } from "express";
 import { Formats, IsArray, IsNumber, IsObject, IsString, toSchema } from "@lib/type_declaration";
+import { User } from "./share.type";
 
 export class getCommentsForVideoReqBody {}
 export class getCommentsForVideoReqQuery {}
 export class getCommentsForVideoReqParams {
     @IsString()
     id: string;
-}
-
-class userComment {
-    @IsString()
-    id: string;
-
-    @IsString()
-    username: string;
-
-    @IsString()
-    avatarUrl: string;
 }
 
 class Comment {
@@ -31,8 +21,8 @@ class Comment {
     @IsString({format: Formats["iso.datetime"]})
     createdAt: string;
 
-    @IsObject(userComment)
-    user: userComment;
+    @IsObject(User)
+    user: User;
 }
 
 export @ApiRequestStatus({
@@ -41,7 +31,7 @@ export @ApiRequestStatus({
 }) class getCommentsForVideoRes {
     @IsNumber()
     total: number;
-    @IsArray(toSchema(Comment))
+    @IsArray(toSchema(Comment)!)
     results: Comment[];
 
     constructor(data?: Partial<getCommentsForVideoRes>) {

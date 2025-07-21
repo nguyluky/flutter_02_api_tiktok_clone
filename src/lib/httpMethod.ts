@@ -8,15 +8,17 @@ export const HTTP_RESP_KEY = "__http_resp"
 export interface HttpInfo {
     path: string,
     method: 'get' | 'post' | 'delete' | 'put' | 'use',
-    data?: any
+    data?: HttpInfoData
 }
 
 
-// interface HttpInfoData {
-//     middlewares?: any[],
-//     isAuth?: boolean,
-//     tags?: string[]
-// }
+interface HttpInfoData {
+    middlewares?: any[],
+    isAuth?: boolean,
+    tags?: string[],
+    summary?: string,
+    description?: string
+}
 
 
 export const Get = (path?: string) => {
@@ -108,4 +110,21 @@ export const ApiRequestStatus = (respData: RespData) => {
     }
 }
 
+export const Summary = (summary: string) => {
+    return function (target: any, propertyKey: PropertyKey) {
+        const data: HttpInfo = Reflect.getMetadata(HTTP_INFO_KEY, target, wa(propertyKey)) as HttpInfo || {};
+        data.data = data.data || {};
+        data.data.summary = summary;
+        Reflect.defineMetadata(HTTP_INFO_KEY, {...data}, target, wa(propertyKey));
+    }
+}
+
+export const Description = (description: string) => {
+    return function (target: any, propertyKey: PropertyKey) {
+        const data: HttpInfo = Reflect.getMetadata(HTTP_INFO_KEY, target, wa(propertyKey)) as HttpInfo || {};
+        data.data = data.data || {};
+        data.data.description = description;
+        Reflect.defineMetadata(HTTP_INFO_KEY, {...data}, target, wa(propertyKey));
+    }
+}
 

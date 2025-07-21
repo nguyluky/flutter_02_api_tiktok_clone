@@ -1,210 +1,125 @@
-import { BadRequestError, UnauthorizedError, ZodBadRequestError } from "@utils/exception";
-import { Router, Request, Response, NextFunction } from "express";
-import * as z from "zod/v4";
-import { HTTP_INFO_KEY, HttpInfo, HTTP_RESP_KEY, RespData } from "./httpMethod";
-import { toSchema, toJsonSchema, getContextType } from "./type_declaration";
-import { SCHEMA_RES_KEY, ApiSchemas } from "./validate";
-import { accessTokenPayload, verifyAccessToken } from "@utils/jwt";
-import { expressToSwaggerPath } from "@utils/express2swaggerPath";
+// TODO: 
+// - [x] convert class declaration to routerSchema
+// - [x] convert routerSchema to express router
+// - [x] convert routerSchema to swagger schema
+// - test
 
+import { Express, NextFunction, Request, Response, Router } from "express";
+import { HTTP_INFO_KEY, HTTP_RESP_KEY, HttpInfo, RespData } from "./httpMethod";
+import { expressToSwaggerPath } from "@utils/express2swaggerPath";
+import z, { globalRegistry, string } from "zod/v4";
+import { ApiSchemas, SCHEMA_RES_KEY } from "./validate";
+import { getContextType, toSchema } from "./type_declaration";
+import { ZodBadRequestError } from "@utils/exception";
+import { swagger } from "./swagget";
+import { accessTokenPayload } from "@utils/jwt";
 
 export type RequestWithUser = accessTokenPayload;
 
-// Convert schemas to Zod
-function convertToZodSchemas(schemas: ApiSchemas): { [key: string]: z.ZodTypeAny } {
-    const schema_zod: { [key: string]: z.ZodTypeAny } = {};
-    for (const [key, value] of Object.entries(schemas)) {
-        if (key === "res") continue;
+
+
+const toJSONSchema = (schema: z.ZodTypeAny) => {
+    // @ts-ignore
+    const schema_ = z.toJSONSchema(schema, {
+        reused: "ref",
+        uri: (id: string) => `#/components/schemas/${id}`,
+        external: {
+            registry: globalRegistry,
+            uri: (id: string) => `#/components/schemas/${id}`,
+            defs: {}
+        }
+    });
+
+    return schema_
+}
+
+interface ZodApiSchemas {
+    [key: string]: {
+        contextType?: string;
+        schema: z.ZodTypeAny;
+        schemaClass: any | any[];
+    }
+}
+
+export interface RouterSchema {
+    httpInfo: HttpInfo;
+    target_class: any;
+    handler: any;
+    subRouter?: RouterSchema[];
+    schema?: ZodApiSchemas;
+    errors?: Error[]
+}
+
+function convertToZodSchemas(schemas: ApiSchemas): ZodApiSchemas {
+    const schema_zod: ZodApiSchemas = {};
+    for (const [key, value] of Object.entries(schemas || {})) {
         if (Array.isArray(value)) {
             const sch = value.map((e) => toSchema(e)).filter((e) => e !== null);
-            schema_zod[key] = z.union(sch);
+            schema_zod[key] = {
+                schemaClass: value,
+                schema: z.union(sch)
+            }
         } else {
-            schema_zod[key] = toSchema(value)!;
+            const sch = toSchema(value);
+            const contextType = getContextType(value);
+            if (!sch) continue;
+
+            schema_zod[key] = {
+                contextType: contextType,
+                schema: sch,
+                schemaClass: value,
+            }
         }
     }
     return schema_zod;
 }
 
-// Configure Swagger paths for HTTP methods
-function configurePath(
-    paths: { [key: string]: any },
-    httpInfo: HttpInfo,
-    target: new () => any,
-    schema_zod: { [key: string]: z.ZodTypeAny },
-    schemas: ApiSchemas
-) {
-    if (!paths[expressToSwaggerPath(httpInfo.path)])
-        paths[expressToSwaggerPath(httpInfo.path)] = {};
 
-    const tags = httpInfo.data?.tags;
+export function toRouterSchema(target: any): RouterSchema[] {
+    const routerSchema: RouterSchema[] = [];
+    const controller = new target() as any;
 
-    paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method] = {
-        tags: tags || [target.name],
-    };
+    const methods = [
+        ...Object.getOwnPropertyNames(Object.getPrototypeOf(controller)),
+        ...Object.getOwnPropertyNames(controller)
+    ]
 
-    // Add request body
-    if (schema_zod?.body) {
-        const contextType = getContextType(schemas.body);
-        paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["requestBody"] = {
-            content: {
-                [contextType || "application/json"]: {
-                    schema: z.toJSONSchema(schema_zod.body),
-                },
-            },
-            required: true,
-        };
-    }
+    for (const method of methods) {
+        const httpInfo: HttpInfo = Reflect.getMetadata(HTTP_INFO_KEY, controller, method) as HttpInfo;
+        const apiSchema: ApiSchemas = Reflect.getMetadata(SCHEMA_RES_KEY, controller, method) as ApiSchemas;
+        const zodSchema = convertToZodSchemas(apiSchema);
 
-    // Add query parameters
-    if (schema_zod?.query) {
-        if (!paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["parameters"]) {
-            paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["parameters"] = [];
-        }
-        for (const key of Object.keys((schema_zod.query as any).shape)) {
-            paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["parameters"].push({
-                in: "query",
-                name: key,
-                schema: z.toJSONSchema((schema_zod.query as any).shape[key]),
-            });
-        }
-    }
+        if (!httpInfo) continue;
 
-    if (schema_zod?.params) {
-        if (!paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["parameters"]) {
-            paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["parameters"] = [];
-        }
-        for (const key of Object.keys((schema_zod.params as any).shape)) {
-            paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["parameters"].push({
-                in: "path",
-                name: key,
-                required: true,
-                schema: z.toJSONSchema((schema_zod.params as any).shape[key]),
-            });
-        }
-    }
-}
-
-// Add response schemas to paths
-function addResponseSchemas(
-    paths: { [key: string]: any },
-    httpInfo: HttpInfo,
-    schemas: ApiSchemas
-) {
-    paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["responses"] = {};
-    if (schemas?.res && Array.isArray(schemas.res)) {
-        for (const class_ of schemas.res) {
-            const respDeco = Reflect.getMetadata(HTTP_RESP_KEY, class_) as RespData;
-            const s = toJsonSchema(class_);
-            paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["responses"][respDeco?.statusCode || 200] = {
-                content: {
-                    "application/json": {
-                        schema: {
-                            $schema: "http://json-schema.org/draft-07/schema#",
-                            type: "object",
-                            properties: {
-                                code: {
-                                    type: "integer",
-                                    description: "HTTP status code of the error",
-                                    minimum: 200,
-                                    maximum: 300,
-                                },
-                                message: {
-                                    type: "string",
-                                    description: "Human-readable error message",
-                                },
-                                data: s,
-                            },
-                            required: [],
-                        },
-                    },
-                },
-                description: respDeco?.statusMess || "OK",
+        if (httpInfo.method == 'use') {
+            const subRouterSchema: RouterSchema[] = toRouterSchema(controller[method]);
+            const schema: RouterSchema = {
+                httpInfo,
+                target_class: target,
+                handler: controller[method].bind(controller),
+                subRouter: subRouterSchema
             };
+            routerSchema.push(schema);
+        }
+
+        else {
+            const errors = (Reflect.getMetadata("exception", controller, method) as Error[]) || [];
+            const schema: RouterSchema = {
+                httpInfo,
+                target_class: target,
+                handler: controller[method].bind(controller),
+                schema: zodSchema,
+                errors: errors
+            };
+            routerSchema.push(schema);
         }
     }
-}
-
-// Add error responses to paths
-function addErrorResponses(
-    paths: { [key: string]: any },
-    httpInfo: HttpInfo,
-    errors: Error[]
-) {
-    for (const classError of errors) {
-        if (!classError) continue;
-        const respDeco = Reflect.getMetadata(HTTP_RESP_KEY, classError) as RespData;
-        paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["responses"][respDeco?.statusCode || 200] = {
-            content: {
-                "application/json": {
-                    schema: {
-                        $schema: "http://json-schema.org/draft-07/schema#",
-                        title: "ApiErrorResponse",
-                        type: "object",
-                        properties: {
-                            code: {
-                                type: "integer",
-                                description: "HTTP status code of the error",
-                                minimum: 400,
-                                maximum: 599,
-                            },
-                            message: {
-                                type: "string",
-                                description: "Human-readable error message",
-                            },
-                            name: {
-                                type: "string",
-                                description: "Error class name",
-                            },
-                        },
-                        required: [],
-                    },
-                },
-            },
-            description: respDeco?.statusMess || "OK",
-        };
-    }
-}
-
-
-// Add authentication security and unauthorized response
-function addAuthSecurity(paths: { [key: string]: any }, httpInfo: HttpInfo) {
-    if (httpInfo.data?.isAuth) {
-        paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["security"] = [{ BearerAuth: [] }];
-        paths[expressToSwaggerPath(httpInfo.path)][httpInfo.method]["responses"][401] = {
-            description: "Unauthorized",
-            content: {
-                "application/json": {
-                    schema: {
-                        $schema: "http://json-schema.org/draft-07/schema#",
-                        title: "UnauthorizedErrorResponse",
-                        type: "object",
-                        properties: {
-                            code: {
-                                type: "integer",
-                                description: "HTTP status code of the error",
-                                minimum: 400,
-                                maximum: 599,
-                            },
-                            message: {
-                                type: "string",
-                                description: "Human-readable error message",
-                            },
-                            name: {
-                                type: "string",
-                                description: "Error class name",
-                            },
-                        },
-                        required: [],
-                    },
-                },
-            },
-        };
-    }
+    return routerSchema;
 }
 
 // Validate request data
 function validateRequest(
-    schema_zod: { [key: string]: z.ZodTypeAny },
+    schema_zod: ZodApiSchemas,
     req: Request
 ) {
     const newData = {
@@ -214,7 +129,7 @@ function validateRequest(
     }
     for (const [key, schema] of Object.entries(schema_zod)) {
         if (key === "res") continue;
-        const data = schema.safeParse((req as any)[key] || {});
+        const data = schema.schema.safeParse((req as any)[key] || {});
         if (!data.success) {
             console.error("Validation error:", (req as any)[key]);
             throw new ZodBadRequestError(data.error);
@@ -226,30 +141,17 @@ function validateRequest(
     return newData;
 }
 
-// Authenticate request
-function authenticateRequest(httpInfo: HttpInfo, req: Request): void {
-    if (httpInfo.data?.isAuth) {
-        const token = req.headers["authorization"]?.split(" ")[1];
-        if (!token) {
-            throw new UnauthorizedError("Authorization token is required");
-        }
-        const decoded = verifyAccessToken(token);
-        (req as any).user = decoded.user;
-    }
-}
-
-// Handle route execution
 async function handleRoute(
-    controller: any,
-    propertyKey: string,
+    classInstance: any,
+    handler: any,
     req: Request,
     res: Response,
     next: NextFunction
 ) {
-    const data = await controller[propertyKey](req, next);
+    const data = await handler.call(classInstance, req, next);
     const respDeco = Reflect.getMetadata(HTTP_RESP_KEY, data.constructor) as RespData;
     if (respDeco) {
-        return res.send({
+        return res.json({
             code: respDeco?.statusCode || 200,
             message: respDeco?.statusMess || "OK",
             data,
@@ -260,87 +162,231 @@ async function handleRoute(
     }
 }
 
-// Main router function
-export function toRouter<T>(target: new () => T) {
-    const router = Router();
-    const paths: { [key: string]: any } = {};
-    (router as any).swagger = paths;
+export function toExpressRouter(routerSchema: RouterSchema[]): Router {
+    const expressRouter = Router();
 
-    const controller = new target() as any;
+    for (const schema of routerSchema) {
+        const { httpInfo, handler, subRouter, schema: schemaZod } = schema;
 
-    // Iterate through controller's own and prototype properties
-    for (const propertyKey of [
-        ...Object.getOwnPropertyNames(controller),
-        ...Object.getOwnPropertyNames(Object.getPrototypeOf(controller)),
-    ]) {
-        const httpInfo = Reflect.getMetadata(HTTP_INFO_KEY, controller, propertyKey) as HttpInfo;
-        const schemas = (Reflect.getMetadata(SCHEMA_RES_KEY, controller, propertyKey) as ApiSchemas) || {};
-        const errors = (Reflect.getMetadata("exception", controller, propertyKey) as Error[]) || [];
+        if (httpInfo.method === 'use') {
+            const subRouterExpress = toExpressRouter(subRouter || []);
+            expressRouter.use(httpInfo.path, subRouterExpress);
+        }
+        else {
+            const method = httpInfo.method.toLowerCase();
+            const validateWrapper = async (req: Request, res: Response, next: any) => {
+                const validatedData = validateRequest(schemaZod || {}, req);
 
-        if (!httpInfo) continue;
-
-        if (["get", "post", "put", "delete"].includes(httpInfo.method)) {
-            const schema_zod = convertToZodSchemas(schemas);
-            configurePath(paths, httpInfo, target, schema_zod, schemas);
-            addResponseSchemas(paths, httpInfo, schemas);
-            addErrorResponses(paths, httpInfo, errors);
-            addAuthSecurity(paths, httpInfo);
-
-            const middlewares = httpInfo.data?.middlewares || [];
-            middlewares.push((req: Request, res: Response, next: NextFunction) => {
-                if (!req.headers["content-type"]?.includes("multipart/form-data")) return next();
-                if (req.file) {
-                    req.body[req.file.fieldname] = new File([req.file.buffer], req.file.originalname, {
-                        type: req.file.mimetype,
-                    });
-                }
-                if (req.files) {
-                    if (Array.isArray(req.files)) {
-                        for (const file of req.files) {
-                            req.body[file.fieldname] = new File([file.buffer], file.originalname, {
-                                type: file.mimetype,
-                            });
-                        }
-                    }
-                    else {
-                        for (const key of Object.keys(req.files)) {
-                            req.body[key] = req.files[key].map((file: Express.Multer.File) => {
-                                return new File([file.buffer], file.originalname, {
-                                    type: file.mimetype,
-                                });
-                            });
-                        }
-                    }
-                }
-
-                console.log("Request body after multer:", req.body);
-                next();
-            });
-
-            router[httpInfo.method](httpInfo.path, ...middlewares, async (req, res, next) => {
-                const validateData = validateRequest(schema_zod, req);
                 const _req = new Proxy(req, {
                     get(target, prop) {
-                        if (prop in validateData) {
-                            return (validateData as any)[prop];
+                        if (prop in validatedData) {
+                            return (validatedData as any)[prop];
                         }
                         return (target as any)[prop];
-                    },
-                })
-                authenticateRequest(httpInfo, req);
-                await handleRoute(controller, propertyKey, _req, res, next);
-            });
-        } else {
-            const supRouter = toRouter(controller[propertyKey]);
-            const swagger = (supRouter as any).swagger as { [key: string]: Object };
-            for (const [key, val] of Object.entries(swagger)) {
-                paths[httpInfo.path + key] = val;
+                    }
+                });
+
+                await handleRoute(schema.target_class, handler, _req, res, next);
+
+                // TODO: how to delete this proxy?
             }
 
-            if (httpInfo.path === "") throw new Error("Nested router path cannot be empty");
-            router.use(httpInfo.path, supRouter);
+            if (method === 'get') {
+                expressRouter.get(httpInfo.path, validateWrapper);
+            } else if (method === 'post') {
+                expressRouter.post(httpInfo.path, validateWrapper);
+            } else if (method === 'put') {
+                expressRouter.put(httpInfo.path, validateWrapper);
+            } else if (method === 'delete') {
+                expressRouter.delete(httpInfo.path, validateWrapper);
+            }
         }
     }
 
-    return router;
+
+    return expressRouter;
 }
+
+
+export function toSwaggerSchema(routerSchema: RouterSchema[]): any {
+    const swaggerSchemas: any = {};
+
+    for (const schema of routerSchema) {
+        const { httpInfo, handler, target_class, schema: zodSchema, errors } = schema;
+
+        if (httpInfo.method === 'use') {
+            const subSwaggerSchemas = toSwaggerSchema(schema.subRouter || []);
+            for (const [path, methods] of Object.entries(subSwaggerSchemas)) {
+                const newPath = expressToSwaggerPath(httpInfo.path) + path;
+                if (!swaggerSchemas[newPath]) {
+                    swaggerSchemas[newPath] = {};
+                }
+                Object.assign(swaggerSchemas[newPath], methods);
+            }
+            continue;
+        }
+
+        const method = httpInfo.method.toLowerCase();
+        const tags = httpInfo.data?.tags || [target_class.name];
+        const swaggerPath = expressToSwaggerPath(httpInfo.path);
+        if (!swaggerSchemas[swaggerPath]) {
+            swaggerSchemas[swaggerPath] = {};
+        }
+
+        swaggerSchemas[swaggerPath][method] = {
+            tags: tags,
+            summary: httpInfo.data?.summary,
+            description: httpInfo.data?.description,
+        };
+
+
+        if (zodSchema?.body) {
+            swaggerSchemas[swaggerPath][method].requestBody = {
+                content: {
+                    [zodSchema.body.contextType || "application/json"]: {
+                        schema: toJSONSchema(zodSchema.body.schema)
+                    }
+                },
+                required: true
+            };
+        }
+
+        if (zodSchema?.query) {
+            swaggerSchemas[swaggerPath][method].parameters = swaggerSchemas[swaggerPath][method].parameters || [];
+            for (const key of Object.keys((zodSchema.query.schema as any).shape)) {
+                const paramSchema = (zodSchema.query.schema as any).shape[key];
+                swaggerSchemas[swaggerPath][method].parameters.push({
+                    name: key,
+                    in: "query",
+                    schema: toJSONSchema(paramSchema)
+                });
+            }
+        }
+
+        if (zodSchema?.params) {
+            swaggerSchemas[swaggerPath][method].parameters = swaggerSchemas[swaggerPath][method].parameters || [];
+            for (const key of Object.keys((zodSchema.params.schema as any).shape)) {
+                const paramSchema = (zodSchema.params.schema as any).shape[key];
+                swaggerSchemas[swaggerPath][method].parameters.push({
+                    name: key,
+                    in: "path",
+                    required: true,
+                    schema: toJSONSchema(paramSchema)
+                });
+            }
+        }
+
+        // Response schema
+
+        if (zodSchema?.res) {
+            swaggerSchemas[swaggerPath][method].responses = swaggerSchemas[swaggerPath][method].responses || {};
+
+            let resSchemas = zodSchema.res.schemaClass;
+            if (!Array.isArray(resSchemas)) {
+                resSchemas = [resSchemas];
+            }
+
+            for (const resSchema of resSchemas) {
+                const respDeco = Reflect.getMetadata(HTTP_RESP_KEY, resSchema) as RespData;
+                const statusCode = respDeco?.statusCode || 200;
+                const statusMess = respDeco?.statusMess || "OK";
+                const zodSchema = toSchema(resSchema);
+                // console.log("Zod schema:", zodSchema);
+                swaggerSchemas[swaggerPath][method].responses[statusCode] = {
+                    description: statusMess,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                $schema: "http://json-schema.org/draft-07/schema#",
+                                type: "object",
+                                properties: {
+                                    code: {
+                                        type: "integer",
+                                        description: "HTTP status code of the error",
+                                        minimum: 200,
+                                        maximum: 300,
+                                    },
+                                    message: {
+                                        type: "string",
+                                        description: "Human-readable error message",
+                                    },
+                                    data: zodSchema ? toJSONSchema(zodSchema) : undefined
+                                },
+                                required: [],
+                            },
+
+                        }
+                    }
+                };
+            }
+
+            // Add error responses
+            for (const classError of errors || []) {
+                if (!classError) continue;
+                const errorDeco = Reflect.getMetadata(HTTP_RESP_KEY, classError) as RespData;
+                const statusCode = errorDeco?.statusCode || 500;
+                const statusMess = errorDeco?.statusMess || "Internal Server Error";
+                swaggerSchemas[swaggerPath][method].responses[statusCode] = {
+                    content: {
+                        "application/json": {
+                            description: statusMess,
+                            schema: {
+                                $schema: "http://json-schema.org/draft-07/schema#",
+                                title: "ApiErrorResponse",
+                                type: "object",
+                                properties: {
+                                    code: {
+                                        type: "integer",
+                                        description: "HTTP status code of the error",
+                                        minimum: 400,
+                                        maximum: 599,
+                                    },
+                                    message: {
+                                        type: "string",
+                                        description: "Human-readable error message",
+                                    },
+                                    name: {
+                                        type: "string",
+                                        description: "Error class name",
+                                    },
+                                },
+                                required: [],
+                            },
+                        },
+                    },
+                }
+            }
+        }
+
+        // Add security
+        if (httpInfo.data?.isAuth) {
+            swaggerSchemas[swaggerPath][method].security = swaggerSchemas[swaggerPath][method].security || [];
+            swaggerSchemas[swaggerPath][method].security.push({
+                BearerAuth: []
+            });
+        // add respone if user not login
+
+            swaggerSchemas[swaggerPath][method].responses = swaggerSchemas[swaggerPath][method].responses || {};
+            swaggerSchemas[swaggerPath][method].responses[401] = {
+                description: "Unauthorized",
+                content: {
+                    "application/json": {
+                        schema: {
+                            $schema: "http://json-schema.org/draft-07/schema#",
+                            type: "object",
+                            properties: {
+                                code: { type: "integer", description: "HTTP status code of the error", minimum: 400, maximum: 599 },
+                                message: { type: "string", description: "Human-readable error message" },
+                            },
+                            required: [],
+                        }
+                    }
+                }
+            };
+        }
+    }
+
+
+    return swaggerSchemas;
+}
+

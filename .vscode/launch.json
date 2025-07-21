@@ -11,6 +11,14 @@
             "name": "Launch Program",
             "console": "integratedTerminal",
             "program": "${workspaceFolder}/dist/index.js",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program 111",
+            "console": "integratedTerminal",
+            // open the current file in the editor
+            "program": "${file}",
         }
 
 

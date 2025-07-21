@@ -2,21 +2,12 @@ import "reflect-metadata";
 import { ApiRequestStatus } from "@lib/httpMethod";
 import { Request } from "express";
 import { Formats, IsNumber, IsObject, IsString } from "@lib/type_declaration";
+import { User } from "./share.type";
 
 export class getVideosFeedReqBody {}
 export class getVideosFeedReqQuery {
     @IsNumber({coerce: true, min: 1})
     limit: number = 10;
-}
-
-
-class VideosUser {
-    @IsString()
-    id: string;
-    @IsNumber()
-    username: string;
-    @IsNumber()
-    avatarUrl: string;
 }
 
 class getVideosFeedResItem {
@@ -37,8 +28,8 @@ class getVideosFeedResItem {
     @IsNumber()
     commentsCount: number;
 
-    @IsObject(VideosUser)
-    user: VideosUser;
+    @IsObject(User)
+    user: User;
 }
 
 export class getVideosFeedReqParams {

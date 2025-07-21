@@ -22,6 +22,30 @@
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
+    },
+    "schemas": {
+      "User": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "number"
+          },
+          "avatarUrl": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "avatarUrl"
+        ],
+        "additionalProperties": false,
+        "id": "User"
+      }
     }
   },
   "paths": {
@@ -56,6 +80,7 @@
         },
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -93,12 +118,12 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "403": {
             "content": {
               "application/json": {
+                "description": "Conflict",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -122,8 +147,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Conflict"
+            }
           }
         }
       }
@@ -159,6 +183,7 @@
         },
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -196,12 +221,12 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "content": {
               "application/json": {
+                "description": "Unauthorized",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -225,12 +250,12 @@
                   "required": []
                 }
               }
-            },
-            "description": "Unauthorized"
+            }
           },
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -254,8 +279,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         }
       }
@@ -267,6 +291,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -326,8 +351,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -335,7 +359,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -347,10 +370,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -361,6 +380,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -384,8 +404,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -402,16 +421,16 @@
         ],
         "parameters": [
           {
-            "in": "query",
             "name": "q",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "type": "string"
             }
           },
           {
-            "in": "query",
             "name": "type",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": "post",
@@ -423,26 +442,29 @@
             }
           },
           {
-            "in": "query",
             "name": "page",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": 1,
-              "type": "number"
+              "type": "number",
+              "minimum": 1
             }
           },
           {
-            "in": "query",
             "name": "limit",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": 10,
-              "type": "number"
+              "type": "number",
+              "minimum": 1
             }
           }
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -480,24 +502,7 @@
                           "items": {
                             "anyOf": [
                               {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "username": {
-                                    "type": "string"
-                                  },
-                                  "avatarUrl": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "username",
-                                  "avatarUrl"
-                                ],
-                                "additionalProperties": false
+                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
                               },
                               {
                                 "type": "object",
@@ -512,24 +517,7 @@
                                     "type": "string"
                                   },
                                   "user": {
-                                    "type": "object",
-                                    "properties": {
-                                      "id": {
-                                        "type": "string"
-                                      },
-                                      "username": {
-                                        "type": "string"
-                                      },
-                                      "avatarUrl": {
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "id",
-                                      "username",
-                                      "avatarUrl"
-                                    ],
-                                    "additionalProperties": false
+                                    "$ref": "#/components/schemas/__shared#/$defs/schema1"
                                   }
                                 },
                                 "required": [
@@ -557,8 +545,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           }
         }
       }
@@ -570,8 +557,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -581,6 +568,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -617,13 +605,13 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-20T02:48:13.866Z",
+                          "default": "2025-07-21T09:08:08.712Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                         },
                         "updatedAt": {
-                          "default": "2025-07-20T02:48:13.866Z",
+                          "default": "2025-07-21T09:08:08.712Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -645,8 +633,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -654,7 +641,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -666,10 +652,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -680,6 +662,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -703,8 +686,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -747,6 +729,7 @@
         },
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -762,14 +745,12 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -777,7 +758,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -789,10 +769,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -815,8 +791,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -826,6 +802,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -841,14 +818,12 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -856,7 +831,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -868,10 +842,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -894,8 +864,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -905,6 +875,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -920,14 +891,12 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -935,7 +904,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -947,10 +915,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -961,6 +925,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -984,8 +949,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -1002,8 +966,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1013,6 +977,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1058,8 +1023,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1067,7 +1031,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -1079,10 +1042,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1093,6 +1052,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1116,8 +1076,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -1134,6 +1093,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1189,8 +1149,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1198,7 +1157,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -1210,10 +1168,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1236,26 +1190,28 @@
         ],
         "parameters": [
           {
-            "in": "query",
             "name": "page",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": 1,
-              "type": "number"
+              "type": "number",
+              "minimum": 1
             }
           },
           {
-            "in": "query",
             "name": "limit",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": 10,
-              "type": "number"
+              "type": "number",
+              "minimum": 1
             }
           },
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1265,6 +1221,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1355,12 +1312,12 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1384,8 +1341,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         }
       }
@@ -1397,17 +1353,19 @@
         ],
         "parameters": [
           {
-            "in": "query",
             "name": "limit",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": 10,
-              "type": "number"
+              "type": "number",
+              "minimum": 1
             }
           }
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1467,24 +1425,7 @@
                               "type": "number"
                             },
                             "user": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "username": {
-                                  "type": "number"
-                                },
-                                "avatarUrl": {
-                                  "type": "number"
-                                }
-                              },
-                              "required": [
-                                "id",
-                                "username",
-                                "avatarUrl"
-                              ],
-                              "additionalProperties": false
+                              "$ref": "#/components/schemas/User"
                             }
                           },
                           "required": [
@@ -1513,8 +1454,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           }
         }
       }
@@ -1557,6 +1497,7 @@
         },
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1598,73 +1539,7 @@
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                         },
                         "user": {
-                          "type": "object",
-                          "properties": {
-                            "page": {
-                              "type": "number"
-                            },
-                            "limit": {
-                              "type": "number"
-                            },
-                            "total": {
-                              "type": "number"
-                            },
-                            "totalPage": {
-                              "type": "number"
-                            },
-                            "results": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "title": {
-                                    "type": "string"
-                                  },
-                                  "thumbnail": {
-                                    "type": "string"
-                                  },
-                                  "user": {
-                                    "type": "object",
-                                    "properties": {
-                                      "id": {
-                                        "type": "string"
-                                      },
-                                      "username": {
-                                        "type": "string"
-                                      },
-                                      "avatarUrl": {
-                                        "type": "string"
-                                      }
-                                    },
-                                    "required": [
-                                      "id",
-                                      "username",
-                                      "avatarUrl"
-                                    ],
-                                    "additionalProperties": false
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "title",
-                                  "thumbnail",
-                                  "user"
-                                ],
-                                "additionalProperties": false
-                              }
-                            }
-                          },
-                          "required": [
-                            "page",
-                            "limit",
-                            "total",
-                            "totalPage",
-                            "results"
-                          ],
-                          "additionalProperties": false
+                          "$ref": "#/components/schemas/User"
                         }
                       },
                       "required": [
@@ -1680,8 +1555,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1689,7 +1563,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -1701,10 +1574,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1727,8 +1596,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1738,33 +1607,28 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
                       "type": "integer",
                       "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
+                      "minimum": 200,
+                      "maximum": 300
                     },
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "OK"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1772,7 +1636,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -1784,10 +1647,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1798,6 +1657,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1821,8 +1681,36 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "description": "Internal Server Error",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1839,8 +1727,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1850,6 +1738,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1865,14 +1754,12 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1880,7 +1767,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -1892,10 +1778,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1906,6 +1788,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1929,8 +1812,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -1947,8 +1829,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1958,6 +1840,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1973,14 +1856,12 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1988,7 +1869,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2000,10 +1880,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2014,6 +1890,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2037,8 +1914,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -2055,8 +1931,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2066,6 +1942,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2093,24 +1970,7 @@
                           "default": [],
                           "type": "array",
                           "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "username": {
-                                "type": "string"
-                              },
-                              "avatarUrl": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "username",
-                              "avatarUrl"
-                            ],
-                            "additionalProperties": false
+                            "$ref": "#/components/schemas/User"
                           }
                         }
                       },
@@ -2124,8 +1984,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -2133,7 +1992,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2145,10 +2003,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2159,6 +2013,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2182,8 +2037,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -2220,8 +2074,8 @@
         },
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2231,6 +2085,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2258,7 +2113,7 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-20T02:48:13.870Z",
+                          "default": "2025-07-21T09:08:08.714Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -2269,24 +2124,7 @@
                             "username": "",
                             "avatarUrl": ""
                           },
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
-                            },
-                            "username": {
-                              "type": "string"
-                            },
-                            "avatarUrl": {
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "username",
-                            "avatarUrl"
-                          ],
-                          "additionalProperties": false
+                          "$ref": "#/components/schemas/User"
                         }
                       },
                       "required": [
@@ -2301,8 +2139,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -2310,7 +2147,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2322,10 +2158,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2336,6 +2168,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2359,8 +2192,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -2375,8 +2207,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2386,6 +2218,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2427,24 +2260,7 @@
                                 "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                               },
                               "user": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "username": {
-                                    "type": "string"
-                                  },
-                                  "avatarUrl": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "username",
-                                  "avatarUrl"
-                                ],
-                                "additionalProperties": false
+                                "$ref": "#/components/schemas/User"
                               }
                             },
                             "required": [
@@ -2467,12 +2283,12 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2496,8 +2312,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         }
       }
@@ -2509,8 +2324,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2520,6 +2335,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2535,14 +2351,12 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -2550,7 +2364,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2562,10 +2375,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2576,6 +2385,7 @@
           "404": {
             "content": {
               "application/json": {
+                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2599,8 +2409,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Resource not found"
+            }
           }
         },
         "security": [
@@ -2617,8 +2426,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "messageId",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2628,6 +2437,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2643,14 +2453,12 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           }
         }
       }
@@ -2662,6 +2470,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2701,44 +2510,10 @@
                                 "type": "string"
                               },
                               "sender": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "username": {
-                                    "type": "string"
-                                  },
-                                  "avatarUrl": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "username",
-                                  "avatarUrl"
-                                ],
-                                "additionalProperties": false
+                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
                               },
                               "receiver": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "username": {
-                                    "type": "string"
-                                  },
-                                  "avatarUrl": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "username",
-                                  "avatarUrl"
-                                ],
-                                "additionalProperties": false
+                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
                               }
                             },
                             "required": [
@@ -2762,8 +2537,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -2771,7 +2545,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2783,10 +2556,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2809,26 +2578,28 @@
         ],
         "parameters": [
           {
-            "in": "query",
             "name": "page",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": 1,
-              "type": "number"
+              "type": "number",
+              "minimum": 1
             }
           },
           {
-            "in": "query",
             "name": "limit",
+            "in": "query",
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
               "default": 10,
-              "type": "number"
+              "type": "number",
+              "minimum": 1
             }
           },
           {
-            "in": "path",
             "name": "userId",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2838,11 +2609,81 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 200,
+                      "maximum": 300
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "data": {
+                      "$schema": "https://json-schema.org/draft/2020-12/schema",
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "results": {
+                          "default": [],
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "content": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "sender": {
+                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                              },
+                              "receiver": {
+                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "content",
+                              "createdAt",
+                              "sender",
+                              "receiver"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "total",
+                        "results"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2854,25 +2695,20 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "OK"
+            }
           },
-          "401": {
-            "description": "Unauthorized",
+          "500": {
             "content": {
               "application/json": {
+                "description": "Internal Server Error",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
+                  "title": "ApiErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2908,8 +2744,8 @@
         ],
         "parameters": [
           {
-            "in": "path",
             "name": "userId",
+            "in": "path",
             "required": true,
             "schema": {
               "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2919,6 +2755,7 @@
         ],
         "responses": {
           "200": {
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2934,18 +2771,17 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "data": null
+                    }
                   },
                   "required": []
                 }
               }
-            },
-            "description": "Success"
+            }
           },
           "400": {
             "content": {
               "application/json": {
+                "description": "Bad request",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2969,8 +2805,7 @@
                   "required": []
                 }
               }
-            },
-            "description": "Bad request"
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -2978,7 +2813,6 @@
               "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "UnauthorizedErrorResponse",
                   "type": "object",
                   "properties": {
                     "code": {
@@ -2990,10 +2824,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
