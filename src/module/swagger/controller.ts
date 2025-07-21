@@ -1,15 +1,28 @@
 import { Get } from "@lib/httpMethod";
-import { makeSwagger } from "@lib/swagget";
+import { swagger } from "@lib/swagget";
+import { RouterSchema, toExpressRouter, toSwaggerSchema } from "@lib/toRouter";
 import { Router } from "express";
 import * as fs from "fs";
+import z from "zod/v4";
 
 
 export default class SwaggerController {
     swagger: any;
     layout: string;
 
-    constructor(apiRouter: Router) {
-        this.swagger = makeSwagger(apiRouter);
+    constructor(apiRouter: RouterSchema[]) {
+        const swaggerSchema = toSwaggerSchema(apiRouter);
+        this.swagger = {
+            ...swagger,
+            paths: swaggerSchema,
+        };
+
+        this.swagger.components = this.swagger.components || {};
+        const globalShema = z.toJSONSchema(z.globalRegistry, {
+            uri: (id: string) => `#/components/schemas/${id}`,
+        });
+        this.swagger.components = {...this.swagger.components, ...globalShema};
+
         this.layout = "responsive"
         fs.writeFile('swagger.json', JSON.stringify(this.swagger, null, 2), (err) => {
             if (err) {
@@ -17,7 +30,7 @@ export default class SwaggerController {
             } else {
                 console.log("swagger.json has been saved.");
             }
-        } )
+        })
     }
 
     @Get("/swagger.json")

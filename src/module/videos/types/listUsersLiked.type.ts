@@ -3,24 +3,13 @@ import { ApiRequestStatus } from "@lib/httpMethod";
 import { Request } from "express";
 import { RequestWithUser } from "@lib/toRouter";
 import { IsArray, IsNumber, IsString, toSchema } from "@lib/type_declaration";
+import { User } from "./share.type";
 
 export class listUsersLikedReqBody {}
 export class listUsersLikedReqQuery {}
 export class listUsersLikedReqParams {
     @IsString()
     id: string;
-}
-
-class listUsersLikedResData {
-    @IsString()
-    id: string;
-
-    @IsString()
-    username: string;
-
-    @IsString()
-    avatarUrl: string;
-
 }
 
 export @ApiRequestStatus({
@@ -30,12 +19,12 @@ export @ApiRequestStatus({
     @IsNumber()
     total: number;
 
-    @IsArray(toSchema(listUsersLikedResData))
-    results: listUsersLikedResData[];
+    @IsArray(toSchema(User)!)
+    results: User[];
 
     constructor(data?: {
         total: number;
-        results: listUsersLikedResData[];
+        results: User[];
     }) {
         if (data) {
             this.total = data.total;

@@ -25,7 +25,7 @@ A simple tiktok clone API
 `
 
 
-const swagger = {
+export const swagger = {
     "openapi": "3.0.3",
     "info": {
         "title": "tiktok clone",
@@ -53,13 +53,5 @@ const swagger = {
     },
     paths: {
     }
-}
-
-
-export function makeSwagger(router: Router) {
-    const paths = (router as any).swagger as Object | {};
-
-    const newSwagger = {...swagger, paths: paths}
-    return newSwagger;
 }
 

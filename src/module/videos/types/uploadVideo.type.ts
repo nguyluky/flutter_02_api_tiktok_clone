@@ -5,6 +5,7 @@ import { RequestWithUser } from "@lib/toRouter";
 import { ContextType, Formats, IsFile, IsObject, IsString } from "@lib/type_declaration";
 import { videosRes } from "module/users/types/videos.type";
 import multer from "multer";
+import { User } from "./share.type";
 
 export @ContextType('multipart/form-data')
 class uploadVideoReqBody {
@@ -23,18 +24,6 @@ class uploadVideoReqBody {
 export class uploadVideoReqQuery {}
 export class uploadVideoReqParams {}
 
-
-class videoUser {
-    @IsString()
-    id: string;
-
-    @IsString()
-    username: string;
-
-    @IsString({ optional: true })
-    avatarUrl?: string;
-}
-
 export @ApiRequestStatus({
     statusCode: 200,
     statusMess: "Success"
@@ -52,8 +41,8 @@ export @ApiRequestStatus({
     @IsString({format: Formats["iso.datetime"]})
     createdAt: string
 
-    @IsObject(videosRes)
-    user: videoUser;
+    @IsObject(User)
+    user: User;
 
     constructor(data: Partial<uploadVideoRes>) {
         Object.assign(this, data);
