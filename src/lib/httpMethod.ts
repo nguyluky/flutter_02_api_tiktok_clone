@@ -12,6 +12,13 @@ export interface HttpInfo {
 }
 
 
+// interface HttpInfoData {
+//     middlewares?: any[],
+//     isAuth?: boolean,
+//     tags?: string[]
+// }
+
+
 export const Get = (path?: string) => {
     return function (target: any, propertyKey: PropertyKey) {
         const data: HttpInfo = Reflect.getMetadata(HTTP_INFO_KEY, target, wa(propertyKey)) as HttpInfo || {};
