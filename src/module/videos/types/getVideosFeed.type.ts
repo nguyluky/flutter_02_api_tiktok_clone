@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ApiRequestStatus } from "@lib/httpMethod";
 import { Request } from "express";
 import { Formats, IsNumber, IsObject, IsString } from "@lib/type_declaration";
-import { User } from "./share.type";
+import { User } from "types/share.type";
 
 export class getVideosFeedReqBody {}
 export class getVideosFeedReqQuery {

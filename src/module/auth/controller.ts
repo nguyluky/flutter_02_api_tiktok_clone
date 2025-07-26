@@ -1,13 +1,13 @@
 import * as loginType from "./types/login.type";
 import * as signupType from "./types/signup.type";
 
+import { Description, Post, Summary } from '@lib/httpMethod';
+import { Validate } from '@lib/validate';
+import { ConflictError, NotFoundError, UnauthorizedError } from '@utils/exception';
+import { generateAccessToken, generateRefreshToken } from '@utils/jwt';
+import { Logger } from '@utils/logger';
 import bcrypt from 'bcryptjs';
-import { Get, IsAuth, Post } from '@lib/httpMethod'
-import { Validate } from '@lib/validate'
-import { BadRequestError, ConflictError, NotFoundError, UnauthorizedError } from '@utils/exception'
-import { generateAccessToken, generateEmailToken, generateRefreshToken, generateTempToken, verifyEmailToken, verifyRefreshToken, verifyTempToken } from '@utils/jwt'
-import { Logger } from '@utils/logger'
-import prisma from 'config/prisma.config'
+import prisma from 'config/prisma.config';
 
 
 const logger = new Logger("Auth");
@@ -15,6 +15,8 @@ const logger = new Logger("Auth");
 export default class AuthController {
     @Post()
     @Validate(signupType.schema)
+    @Summary("User Signup")
+    @Description("Create a new user account")
     async signup(req: signupType.Req) {
         const { email, password } = req.body;
 
@@ -49,6 +51,8 @@ export default class AuthController {
 
     @Post()
     @Validate(loginType.schema)
+    @Summary("User Login")
+    @Description("Authenticate user and return tokens")
     async login(req: loginType.Req) {
         const { email, password } = req.body;
 

@@ -1,24 +1,31 @@
 
+import cors from 'cors';
 import express from 'express';
+import { createServer } from 'http';
+import InitSocketIO from 'socket';
+import { Server } from 'socket.io';
 import env from './env';
 import { errorHandler } from './middleware/error';
 import { requestLogger } from './middleware/requestLogger';
 import { apiRouter, swaggerRouter } from './module';
 import { Logger } from './utils/logger';
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import InitSocketIO from 'socket';
-import bodyParser from 'body-parser';
 
 const logger = new Logger('MAIN');
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {})
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*",
+    }
+})
 InitSocketIO(io);
 
 // app.use(exo)
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+    origin: "*"
+}))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger)
 
 
@@ -28,11 +35,18 @@ app.use(apiRouter);
 app.get("/", (req, res) => {
     res.send("hello") 
 })
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        code: 200,
+        message: 'OK',
+        name: 'HealthCheck'
+    })
+});
 
 app.use((req, res, next) => {
     res.status(404).json({
         code: 404,
-        message: 'Not Found',
+        message: `Not Found - ${req.originalUrl} - ${req.method}`,
         name: 'NotFoundError'
     })
 });

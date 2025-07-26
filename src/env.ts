@@ -1,7 +1,7 @@
 
 
-import { config } from 'dotenv';
 import { IsEnum, IsNumber, IsString, toSchema } from '@lib/type_declaration';
+import { config } from 'dotenv';
 
 class Env {
     @IsString()
@@ -23,7 +23,7 @@ class Env {
     TWO_FACTOR_EXPIRATION: string = "5m";
 
     @IsString()
-    EMIAL_SECRET: string;
+    EMAIL_SECRET: string;
 
     @IsString()
     REFRESH_TOKEN_EXPIRATION: string = "1y"
@@ -45,7 +45,7 @@ class Env {
 
 }
 
-const EnvShema = toSchema(Env);
+const EnvShema = toSchema(Env)!;
 
 config()
 

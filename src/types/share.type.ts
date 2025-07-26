@@ -1,10 +1,10 @@
-import { IsNumber, IsString } from "@lib/type_declaration";
+import { IsString } from "@lib/type_declaration";
 
 export class User {
     @IsString()
     id: string;
-    @IsNumber()
+    @IsString()
     username: string;
-    @IsNumber()
+    @IsString()
     avatarUrl: string;
 }

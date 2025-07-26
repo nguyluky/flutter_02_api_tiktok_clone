@@ -4,24 +4,23 @@
 // - [x] convert routerSchema to swagger schema
 // - test
 
-import { Express, NextFunction, Request, Response, Router } from "express";
-import { HTTP_INFO_KEY, HTTP_RESP_KEY, HttpInfo, RespData } from "./httpMethod";
+import { UnauthorizedError, ZodBadRequestError } from "@utils/exception";
 import { expressToSwaggerPath } from "@utils/express2swaggerPath";
-import z, { globalRegistry, string } from "zod/v4";
-import { ApiSchemas, SCHEMA_RES_KEY } from "./validate";
+import { accessTokenPayload, verifyAccessToken } from "@utils/jwt";
+import { NextFunction, Request, Response, Router } from "express";
+import z, { globalRegistry } from "zod/v4";
+import { HTTP_INFO_KEY, HTTP_RESP_KEY, HttpInfo, RespData } from "./httpMethod";
 import { getContextType, toSchema } from "./type_declaration";
-import { ZodBadRequestError } from "@utils/exception";
-import { swagger } from "./swagget";
-import { accessTokenPayload } from "@utils/jwt";
+import { ApiSchemas, SCHEMA_RES_KEY } from "./validate";
+import { http } from "winston";
+import { SecurityScheme } from "./BaseAuth";
+import { Logger } from "@utils/logger";
 
 export type RequestWithUser = accessTokenPayload;
-
-
 
 const toJSONSchema = (schema: z.ZodTypeAny) => {
     // @ts-ignore
     const schema_ = z.toJSONSchema(schema, {
-        reused: "ref",
         uri: (id: string) => `#/components/schemas/${id}`,
         external: {
             registry: globalRegistry,
@@ -174,7 +173,22 @@ export function toExpressRouter(routerSchema: RouterSchema[]): Router {
         }
         else {
             const method = httpInfo.method.toLowerCase();
-            const validateWrapper = async (req: Request, res: Response, next: any) => {
+            // const validateWrapper =
+            // console.log('Registering route:', method, httpInfo.path, 'for', schema.target_class.name);
+            (expressRouter as any)[method](httpInfo.path, async (req: Request, res: Response, next: any) => {
+                if (schema.httpInfo.data?.isAuth) {
+                    for (const authSchema of schema.httpInfo.data.isAuth) {
+                        const data = await authSchema.validate(req);
+                        if (!data) {
+                            throw new UnauthorizedError("Unauthorized");
+                        }
+                        // Attach user data to request
+                        for (const key of Object.keys(data)) {
+                            (req as any)[key] = data[key];
+                        }
+                    }
+                }
+
                 const validatedData = validateRequest(schemaZod || {}, req);
 
                 const _req = new Proxy(req, {
@@ -189,17 +203,8 @@ export function toExpressRouter(routerSchema: RouterSchema[]): Router {
                 await handleRoute(schema.target_class, handler, _req, res, next);
 
                 // TODO: how to delete this proxy?
-            }
+            })
 
-            if (method === 'get') {
-                expressRouter.get(httpInfo.path, validateWrapper);
-            } else if (method === 'post') {
-                expressRouter.post(httpInfo.path, validateWrapper);
-            } else if (method === 'put') {
-                expressRouter.put(httpInfo.path, validateWrapper);
-            } else if (method === 'delete') {
-                expressRouter.delete(httpInfo.path, validateWrapper);
-            }
         }
     }
 
@@ -208,27 +213,23 @@ export function toExpressRouter(routerSchema: RouterSchema[]): Router {
 }
 
 
-export function toSwaggerSchema(routerSchema: RouterSchema[]): any {
+
+export function toSwaggerSchema(routerSchema: RouterSchema[], swagger: any, path: string = ""): any {
     const swaggerSchemas: any = {};
 
     for (const schema of routerSchema) {
         const { httpInfo, handler, target_class, schema: zodSchema, errors } = schema;
 
+        const swaggerPath = path + expressToSwaggerPath(httpInfo.path);
         if (httpInfo.method === 'use') {
-            const subSwaggerSchemas = toSwaggerSchema(schema.subRouter || []);
-            for (const [path, methods] of Object.entries(subSwaggerSchemas)) {
-                const newPath = expressToSwaggerPath(httpInfo.path) + path;
-                if (!swaggerSchemas[newPath]) {
-                    swaggerSchemas[newPath] = {};
-                }
-                Object.assign(swaggerSchemas[newPath], methods);
-            }
+            toSwaggerSchema(schema.subRouter || [], swagger, swaggerPath);
             continue;
         }
 
         const method = httpInfo.method.toLowerCase();
         const tags = httpInfo.data?.tags || [target_class.name];
-        const swaggerPath = expressToSwaggerPath(httpInfo.path);
+
+
         if (!swaggerSchemas[swaggerPath]) {
             swaggerSchemas[swaggerPath] = {};
         }
@@ -238,7 +239,6 @@ export function toSwaggerSchema(routerSchema: RouterSchema[]): any {
             summary: httpInfo.data?.summary,
             description: httpInfo.data?.description,
         };
-
 
         if (zodSchema?.body) {
             swaggerSchemas[swaggerPath][method].requestBody = {
@@ -327,9 +327,9 @@ export function toSwaggerSchema(routerSchema: RouterSchema[]): any {
                 const statusCode = errorDeco?.statusCode || 500;
                 const statusMess = errorDeco?.statusMess || "Internal Server Error";
                 swaggerSchemas[swaggerPath][method].responses[statusCode] = {
+                    description: statusMess,
                     content: {
                         "application/json": {
-                            description: statusMess,
                             schema: {
                                 $schema: "http://json-schema.org/draft-07/schema#",
                                 title: "ApiErrorResponse",
@@ -358,14 +358,28 @@ export function toSwaggerSchema(routerSchema: RouterSchema[]): any {
             }
         }
 
-        // Add security
-        if (httpInfo.data?.isAuth) {
-            swaggerSchemas[swaggerPath][method].security = swaggerSchemas[swaggerPath][method].security || [];
-            swaggerSchemas[swaggerPath][method].security.push({
-                BearerAuth: []
-            });
-        // add respone if user not login
+        // get security schemes
+        const authSchemes = httpInfo.data?.isAuth || [];
+        if (authSchemes.length !== 0) {
+            for (const scheme of authSchemes) {
+                const authName = scheme.constructor.name;
+                if (!swagger.components) {
+                    swagger.components = {};
+                }
 
+                if (!swagger.components.securitySchemes) {
+                    swagger.components.securitySchemes = {};
+                }
+
+                if (!swagger.components.securitySchemes[authName]) {
+                    swagger.components.securitySchemes[authName] = scheme;
+                }
+
+                swaggerSchemas[swaggerPath][method].security = swaggerSchemas[swaggerPath][method].security || [];
+                swaggerSchemas[swaggerPath][method].security.push({
+                    [authName]: []
+                });
+            }
             swaggerSchemas[swaggerPath][method].responses = swaggerSchemas[swaggerPath][method].responses || {};
             swaggerSchemas[swaggerPath][method].responses[401] = {
                 description: "Unauthorized",
@@ -386,7 +400,8 @@ export function toSwaggerSchema(routerSchema: RouterSchema[]): any {
         }
     }
 
+    swagger.paths = { ...swagger.paths, ...swaggerSchemas };
 
-    return swaggerSchemas;
+    return swagger;
 }
 

@@ -7,20 +7,16 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000",
+      "url": "http://localhost:3030",
       "description": "Local development server"
-    },
-    {
-      "url": "https://test.tkbsgusort.id.vn",
-      "description": "Production server"
     }
   ],
   "components": {
     "securitySchemes": {
-      "BearerAuth": {
+      "JWTAuth": {
         "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "description": "JWT Authentication Scheme",
+        "scheme": "bearer"
       }
     },
     "schemas": {
@@ -32,10 +28,10 @@
             "type": "string"
           },
           "username": {
-            "type": "number"
+            "type": "string"
           },
           "avatarUrl": {
-            "type": "number"
+            "type": "string"
           }
         },
         "required": [
@@ -54,6 +50,8 @@
         "tags": [
           "AuthController"
         ],
+        "summary": "User Signup",
+        "description": "Create a new user account",
         "requestBody": {
           "content": {
             "application/json": {
@@ -121,9 +119,9 @@
             }
           },
           "403": {
+            "description": "Conflict",
             "content": {
               "application/json": {
-                "description": "Conflict",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -157,6 +155,8 @@
         "tags": [
           "AuthController"
         ],
+        "summary": "User Login",
+        "description": "Authenticate user and return tokens",
         "requestBody": {
           "content": {
             "application/json": {
@@ -224,9 +224,9 @@
             }
           },
           "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
-                "description": "Unauthorized",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -253,9 +253,9 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -289,6 +289,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Get User Profile",
+        "description": "Get current authenticated user's profile information",
         "responses": {
           "200": {
             "description": "Success",
@@ -378,9 +380,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -409,7 +440,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -419,6 +450,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Search Users and Posts",
+        "description": "Search for users or posts based on query string",
         "parameters": [
           {
             "name": "q",
@@ -502,7 +535,7 @@
                           "items": {
                             "anyOf": [
                               {
-                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                                "$ref": "#/components/schemas/User"
                               },
                               {
                                 "type": "object",
@@ -517,7 +550,7 @@
                                     "type": "string"
                                   },
                                   "user": {
-                                    "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                                    "$ref": "#/components/schemas/User"
                                   }
                                 },
                                 "required": [
@@ -555,6 +588,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Get User By ID",
+        "description": "Get user information by user ID",
         "parameters": [
           {
             "name": "id",
@@ -605,13 +640,13 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-21T09:08:08.712Z",
+                          "default": "2025-07-26T17:25:15.740Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                         },
                         "updatedAt": {
-                          "default": "2025-07-21T09:08:08.712Z",
+                          "default": "2025-07-26T17:25:15.740Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -660,9 +695,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -691,7 +755,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -701,6 +765,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Update User Profile",
+        "description": "Update current user's profile information",
         "requestBody": {
           "content": {
             "application/json": {
@@ -775,11 +841,40 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -789,6 +884,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Follow User",
+        "description": "Follow a user by their ID",
         "parameters": [
           {
             "name": "id",
@@ -848,11 +945,40 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -862,6 +988,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Unfollow User",
+        "description": "Unfollow a user by their ID",
         "parameters": [
           {
             "name": "id",
@@ -923,9 +1051,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -954,7 +1111,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -964,6 +1121,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Get Follow Status",
+        "description": "Check if current user is following another user",
         "parameters": [
           {
             "name": "id",
@@ -1050,9 +1209,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1081,7 +1269,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -1091,6 +1279,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Get Following List",
+        "description": "Get list of users that current user is following",
         "responses": {
           "200": {
             "description": "Success",
@@ -1174,11 +1364,40 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -1188,6 +1407,8 @@
         "tags": [
           "UsersController"
         ],
+        "summary": "Get User Videos",
+        "description": "Get all videos posted by a specific user",
         "parameters": [
           {
             "name": "page",
@@ -1315,9 +1536,9 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1351,6 +1572,8 @@
         "tags": [
           "VideosController"
         ],
+        "summary": "Get Videos Feed",
+        "description": "Get random videos for the main feed",
         "parameters": [
           {
             "name": "limit",
@@ -1464,6 +1687,8 @@
         "tags": [
           "VideosController"
         ],
+        "summary": "Upload Video",
+        "description": "Upload a new video with title and description",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -1580,11 +1805,40 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -1594,6 +1848,8 @@
         "tags": [
           "VideosController"
         ],
+        "summary": "Delete Video",
+        "description": "Delete a video by ID (only video owner can delete)",
         "parameters": [
           {
             "name": "id",
@@ -1655,9 +1911,9 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1684,9 +1940,9 @@
             }
           },
           "500": {
+            "description": "Internal Server Error",
             "content": {
               "application/json": {
-                "description": "Internal Server Error",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1715,7 +1971,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -1725,6 +1981,8 @@
         "tags": [
           "LikeController"
         ],
+        "summary": "Like Video",
+        "description": "Like a video by ID",
         "parameters": [
           {
             "name": "id",
@@ -1786,9 +2044,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1817,7 +2104,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -1827,6 +2114,8 @@
         "tags": [
           "LikeController"
         ],
+        "summary": "Unlike Video",
+        "description": "Remove like from a video by ID",
         "parameters": [
           {
             "name": "id",
@@ -1888,9 +2177,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -1919,7 +2237,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -1929,6 +2247,8 @@
         "tags": [
           "LikeController"
         ],
+        "summary": "Get Video Likes",
+        "description": "Get list of users who liked the video",
         "parameters": [
           {
             "name": "id",
@@ -2011,9 +2331,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2042,7 +2391,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -2052,6 +2401,8 @@
         "tags": [
           "CommentsController"
         ],
+        "summary": "Add Comment",
+        "description": "Add a comment to a video",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2113,7 +2464,7 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-21T09:08:08.714Z",
+                          "default": "2025-07-26T17:25:15.742Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -2166,9 +2517,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2197,7 +2577,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       },
@@ -2205,6 +2585,8 @@
         "tags": [
           "CommentsController"
         ],
+        "summary": "Get Video Comments",
+        "description": "Get all comments for a specific video",
         "parameters": [
           {
             "name": "id",
@@ -2286,9 +2668,9 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2322,6 +2704,8 @@
         "tags": [
           "CommentsController"
         ],
+        "summary": "Delete Comment",
+        "description": "Delete a comment by ID (only comment owner can delete)",
         "parameters": [
           {
             "name": "id",
@@ -2383,9 +2767,38 @@
             }
           },
           "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
-                "description": "Resource not found",
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2414,7 +2827,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -2424,6 +2837,8 @@
         "tags": [
           "ChatsController"
         ],
+        "summary": "Delete Message",
+        "description": "Delete a message by message ID (only sender can delete)",
         "parameters": [
           {
             "name": "messageId",
@@ -2468,6 +2883,8 @@
         "tags": [
           "ChatsController"
         ],
+        "summary": "Get Conversations",
+        "description": "Get list of all conversations for current user",
         "responses": {
           "200": {
             "description": "Success",
@@ -2510,10 +2927,44 @@
                                 "type": "string"
                               },
                               "sender": {
-                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "username": {
+                                    "type": "string"
+                                  },
+                                  "avatarUrl": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "username",
+                                  "avatarUrl"
+                                ],
+                                "additionalProperties": false
                               },
                               "receiver": {
-                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "username": {
+                                    "type": "string"
+                                  },
+                                  "avatarUrl": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "username",
+                                  "avatarUrl"
+                                ],
+                                "additionalProperties": false
                               }
                             },
                             "required": [
@@ -2562,11 +3013,40 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }
@@ -2576,6 +3056,8 @@
         "tags": [
           "ChatsController"
         ],
+        "summary": "Get Messages",
+        "description": "Get messages between current user and another user",
         "parameters": [
           {
             "name": "page",
@@ -2649,10 +3131,44 @@
                                 "type": "string"
                               },
                               "sender": {
-                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "username": {
+                                    "type": "string"
+                                  },
+                                  "avatarUrl": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "username",
+                                  "avatarUrl"
+                                ],
+                                "additionalProperties": false
                               },
                               "receiver": {
-                                "$ref": "#/components/schemas/__shared#/$defs/schema1"
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "username": {
+                                    "type": "string"
+                                  },
+                                  "avatarUrl": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "username",
+                                  "avatarUrl"
+                                ],
+                                "additionalProperties": false
                               }
                             },
                             "required": [
@@ -2703,9 +3219,9 @@
             }
           },
           "500": {
+            "description": "Internal Server Error",
             "content": {
               "application/json": {
-                "description": "Internal Server Error",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2734,7 +3250,7 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       },
@@ -2742,6 +3258,8 @@
         "tags": [
           "ChatsController"
         ],
+        "summary": "Delete Chat",
+        "description": "Delete entire conversation with another user",
         "parameters": [
           {
             "name": "userId",
@@ -2779,9 +3297,9 @@
             }
           },
           "400": {
+            "description": "Bad request",
             "content": {
               "application/json": {
-                "description": "Bad request",
                 "schema": {
                   "$schema": "http://json-schema.org/draft-07/schema#",
                   "title": "ApiErrorResponse",
@@ -2830,11 +3348,40 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "title": "ApiErrorResponse",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "HTTP status code of the error",
+                      "minimum": 400,
+                      "maximum": 599
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Error class name"
+                    }
+                  },
+                  "required": []
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "JWTAuth": []
           }
         ]
       }

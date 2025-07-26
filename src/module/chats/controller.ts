@@ -1,16 +1,18 @@
-import * as deleteMessageType from "./types/deleteMessage.type";
-import * as sendMessageType from "./types/sendMessage.type";
-import * as deleteChatType from "./types/deleteChat.type";
-import * as getMessageType from "./types/getMessage.type";
-import * as getListOfConverType from "./types/getListOfConver.type";
-import { Delete, Get, IsAuth, Post } from "@lib/httpMethod";
-import prisma from "config/prisma.config";
+import { Delete, Description, Get, useAuth, Summary } from "@lib/httpMethod";
 import { Validate } from "@lib/validate";
 import { BadRequestError } from "@utils/exception";
+import prisma from "config/prisma.config";
+import * as deleteChatType from "./types/deleteChat.type";
+import * as deleteMessageType from "./types/deleteMessage.type";
+import * as getListOfConverType from "./types/getListOfConver.type";
+import * as getMessageType from "./types/getMessage.type";
+import { JWT_AUTH } from "@utils/jwt";
 
 export default class ChatsController {
     @Delete("/message/:messageId")
     @Validate(deleteMessageType.schema)
+    @Summary("Delete Message")
+    @Description("Delete a message by message ID (only sender can delete)")
     async deleteMessage(req: deleteMessageType.Req) {
         const userId = req.user.id;
         const { messageId } = req.params;
@@ -27,8 +29,10 @@ export default class ChatsController {
     }
 
     @Get("/")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(getListOfConverType.schema)
+    @Summary("Get Conversations")
+    @Description("Get list of all conversations for current user")
     async getListOfConver(req: getListOfConverType.Req) {
         const userId = req.user.id;
 
@@ -135,8 +139,10 @@ export default class ChatsController {
 
 
     @Get("/:userId")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(getMessageType.schema)
+    @Summary("Get Messages")
+    @Description("Get messages between current user and another user")
     async getMessage(req: getMessageType.Req) {
         const userId = req.user.id;
         const { userId: targetUserId } = req.params;
@@ -202,8 +208,10 @@ export default class ChatsController {
 
 
     @Delete("/:userId")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(deleteChatType.schema)
+    @Summary("Delete Chat")
+    @Description("Delete entire conversation with another user")
     async deleteChat(req: deleteChatType.Req) {
         const userId = req.user.id;
         const { userId: targetUserId } = req.params;

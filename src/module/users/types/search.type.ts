@@ -1,7 +1,8 @@
-import "reflect-metadata";
 import { ApiRequestStatus } from "@lib/httpMethod";
-import { Request } from "express";
 import { IsArray, IsEnum, IsNumber, IsObject, IsString, toSchema } from "@lib/type_declaration";
+import { Request } from "express";
+import "reflect-metadata";
+import { User } from "types/share.type";
 import z from "zod/v4";
 
 export class searchReqBody {}
@@ -18,16 +19,6 @@ export class searchReqQuery {
     limit: number = 10;
 }
 export class searchReqParams {}
-
-
-class User {
-    @IsString()
-    id: string;
-    @IsString()
-    username: string;
-    @IsString()
-    avatarUrl: string;
-}
 
 class Video {
     @IsString()
@@ -53,7 +44,7 @@ export @ApiRequestStatus({
     @IsNumber()
     totalPage: number;
 
-    @IsArray(z.union([toSchema(User),toSchema(Video)]))
+    @IsArray(z.union([toSchema(User)!,toSchema(Video)!]))
     results: (User | Video)[];
 
     constructor(data?: searchRes) {

@@ -2,8 +2,31 @@ import jwt from "jsonwebtoken";
 import type { StringValue } from "ms";
 import env from "../env";
 
+import { HttpScheme, HttpSecurityScheme } from "@lib/BaseAuth";
 import { User } from "@prisma/client";
 import { ApiError, TokenTimeoutError, TokenVerificationError } from "./exception";
+
+
+class JWTAuth extends HttpSecurityScheme {
+    constructor() {
+        super(HttpScheme.BEARER, undefined, "JWT Authentication Scheme");
+    }
+
+    async validated(token: string): Promise<accessTokenPayload | null> {
+        try {
+            const decoded = jwt.verify(token, env.JWT_SECRET);
+            return decoded as accessTokenPayload;
+        } catch (error) {
+            return null;
+        }
+    }
+
+}
+
+
+// type where authentication succeeds and this type is in response
+
+export const JWT_AUTH = new JWTAuth();
 
 export const generateTempToken = (userid: string) => {
     const token = jwt.sign( { userid }, env.TWO_FACTOR_SECRET, { expiresIn: env.TWO_FACTOR_EXPIRATION as StringValue })
@@ -73,7 +96,7 @@ export const verifyRefreshToken = (token: string) => {
 }
 
 export const generateEmailToken = (userid: string) => {
-    const token = jwt.sign({userid}, env.EMIAL_SECRET, {
+    const token = jwt.sign({userid}, env.EMAIL_SECRET, {
         expiresIn: "1h"
     })
 
@@ -84,7 +107,7 @@ export const generateEmailToken = (userid: string) => {
 
 export const verifyEmailToken = (token: string) => {
     try {
-        const decoded = jwt.verify(token, env.EMIAL_SECRET)
+        const decoded = jwt.verify(token, env.EMAIL_SECRET)
         return decoded as {userid: string}
 
     } catch (error) {

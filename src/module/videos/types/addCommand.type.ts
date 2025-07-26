@@ -3,7 +3,7 @@ import { ApiRequestStatus } from "@lib/httpMethod";
 import { Request } from "express";
 import { RequestWithUser } from "@lib/toRouter";
 import { Formats, IsObject, IsString } from "@lib/type_declaration";
-import { User } from "./share.type";
+import { User } from "types/share.type";
 
 export class addCommandReqBody {
     @IsString()

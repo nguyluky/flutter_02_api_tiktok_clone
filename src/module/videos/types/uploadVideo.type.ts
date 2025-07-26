@@ -5,7 +5,7 @@ import { RequestWithUser } from "@lib/toRouter";
 import { ContextType, Formats, IsFile, IsObject, IsString } from "@lib/type_declaration";
 import { videosRes } from "module/users/types/videos.type";
 import multer from "multer";
-import { User } from "./share.type";
+import { User } from "types/share.type";
 
 export @ContextType('multipart/form-data')
 class uploadVideoReqBody {

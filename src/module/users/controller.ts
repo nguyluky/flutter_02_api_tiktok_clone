@@ -1,23 +1,25 @@
-import * as getProfileType from "./types/getProfile.type";
-import * as videosType from "./types/videos.type";
-import * as searchType from "./types/search.type";
-import * as getFollowingType from "./types/getFollowing.type";
-import * as followStatusType from "./types/followStatus.type";
-import * as unFollowUserType from "./types/unFollowUser.type";
-import * as followUserType from "./types/followUser.type";
-import * as updateUserProfileType from "./types/updateUserProfile.type";
-import * as getByIdType from "./types/getById.type";
-import { Get, IsAuth, Post, Put } from "@lib/httpMethod";
-import prisma from "config/prisma.config";
+import { Description, Get, useAuth, Put, Summary } from "@lib/httpMethod";
 import { Validate } from "@lib/validate";
 import { NotFoundError } from "@utils/exception";
-import { throws } from "assert";
+import prisma from "config/prisma.config";
+import * as followStatusType from "./types/followStatus.type";
+import * as followUserType from "./types/followUser.type";
+import * as getByIdType from "./types/getById.type";
+import * as getFollowingType from "./types/getFollowing.type";
+import * as getProfileType from "./types/getProfile.type";
+import * as searchType from "./types/search.type";
+import * as unFollowUserType from "./types/unFollowUser.type";
+import * as updateUserProfileType from "./types/updateUserProfile.type";
+import * as videosType from "./types/videos.type";
+import { JWT_AUTH } from "@utils/jwt";
 
 export default class UsersController {
 
     @Get("/me")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(getProfileType.schema)
+    @Summary("Get User Profile")
+    @Description("Get current authenticated user's profile information")
     async getProfile(req: getProfileType.Req) {
 
         const currentUserId = req.user.id;
@@ -55,6 +57,8 @@ export default class UsersController {
 
     @Get("/search")
     @Validate(searchType.schema)
+    @Summary("Search Users and Posts")
+    @Description("Search for users or posts based on query string")
     async search(req: searchType.Req) {
         const { q, type, page, limit} = req.query;
 
@@ -132,8 +136,10 @@ export default class UsersController {
 
 
     @Get("/:id")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(getByIdType.schema)
+    @Summary("Get User By ID")
+    @Description("Get user information by user ID")
     async getById(req: getByIdType.Req) {
         const { id: targetUserId } = req.params;
         const currentUserId = req.user.id;
@@ -163,8 +169,10 @@ export default class UsersController {
 
 
     @Put("/")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(updateUserProfileType.schema)
+    @Summary("Update User Profile")
+    @Description("Update current user's profile information")
     async updateUserProfile(req: updateUserProfileType.Req) {
         const currentUserId = req.user.id;
 
@@ -177,8 +185,10 @@ export default class UsersController {
     }
 
     @Get("/:id/follow")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(followUserType.schema)
+    @Summary("Follow User")
+    @Description("Follow a user by their ID")
     async followUser(req: followUserType.Req) {
         const currentUserId = req.user.id;
         const targetUserId = req.params.id;
@@ -209,8 +219,10 @@ export default class UsersController {
 
 
     @Get("/:id/unfollow")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(unFollowUserType.schema)
+    @Summary("Unfollow User")
+    @Description("Unfollow a user by their ID")
     async unFollowUser(req: unFollowUserType.Req) {
         const currentUserId = req.user.id;
         const targetUserId = req.params.id;
@@ -239,8 +251,10 @@ export default class UsersController {
 
 
     @Get("/:id/follow-status")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(followStatusType.schema)
+    @Summary("Get Follow Status")
+    @Description("Check if current user is following another user")
     async followStatus(req: followStatusType.Req) {
         const currentUserId = req.user.id;
         const targetUserId = req.params.id;
@@ -278,8 +292,10 @@ export default class UsersController {
 
 
     @Get("/me/following")
-    @IsAuth()
+    @useAuth(JWT_AUTH)
     @Validate(getFollowingType.schema)
+    @Summary("Get Following List")
+    @Description("Get list of users that current user is following")
     async getFollowing(req: getFollowingType.Req) {
         const currentUserId = req.user.id;
 
@@ -310,6 +326,8 @@ export default class UsersController {
 
     @Get("/:id/videos")
     @Validate(videosType.schema)
+    @Summary("Get User Videos")
+    @Description("Get all videos posted by a specific user")
     async videos(req: videosType.Req) {
         const { id: userId } = req.params;
         const { page, limit } = req.query;
