@@ -61,10 +61,10 @@ abstract class SecurityScheme {
   }
 
   // Phương thức trừu tượng validate
-  abstract validate(req: Request): Promise<boolean>;
+  abstract validate(req: Request): Promise<any | null>;
 
   // Phương thức trừu tượng validated để xác thực với token
-  abstract validated(token: string): Promise<boolean>;
+  abstract validated(token: string): Promise<any | null>;
 }
 
 // Class cho HTTP Security Scheme
@@ -78,7 +78,7 @@ class HttpSecurityScheme extends SecurityScheme {
     this.bearerFormat = bearerFormat;
   }
 
-  async validate(req: Request): Promise<boolean> {
+  async validate(req: Request): Promise<any | null> {
     const authHeader = req.headers.authorization;
     if (!authHeader) return false;
 
@@ -94,7 +94,7 @@ class HttpSecurityScheme extends SecurityScheme {
     return false;
   }
 
-  async validated(token: string): Promise<boolean> {
+  async validated(token: string): Promise<any | null> {
     if (this.scheme === HttpScheme.BASIC) {
       const credentials = Buffer.from(token, 'base64').toString('ascii');
       const [username, password] = credentials.split(':');
@@ -119,7 +119,7 @@ class ApiKeySecurityScheme extends SecurityScheme {
     this.name = name;
   }
 
-  async validate(req: Request): Promise<boolean> {
+  async validate(req: Request): Promise<any | null> {
     let apiKey: string | undefined;
     if (this.in === ApiKeyIn.HEADER) {
       apiKey = req.headers[this.name.toLowerCase()] as string;
@@ -132,7 +132,7 @@ class ApiKeySecurityScheme extends SecurityScheme {
     return this.validated(apiKey);
   }
 
-  async validated(token: string): Promise<boolean> {
+  async validated(token: string): Promise<any | null> {
     // Ví dụ: Kiểm tra API Key (thay bằng logic thực tế)
     return token === 'abc123';
   }
@@ -147,14 +147,14 @@ class OAuth2SecurityScheme extends SecurityScheme {
     this.flows = flows;
   }
 
-  async validate(req: Request): Promise<boolean> {
+  async validate(req: Request): Promise<any | null> {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
     const token = authHeader.split(' ')[1];
     return this.validated(token);
   }
 
-  async validated(token: string): Promise<boolean> {
+  async validated(token: string): Promise<any | null> {
     // Ví dụ: Kiểm tra OAuth2 token (thay bằng logic thực tế, ví dụ gọi token introspection endpoint)
     return token === 'valid_oauth_token'; // Giả lập kiểm tra
   }
@@ -169,14 +169,14 @@ class OpenIdConnectSecurityScheme extends SecurityScheme {
     this.openIdConnectUrl = openIdConnectUrl;
   }
 
-  async validate(req: Request): Promise<boolean> {
+  async validate(req: Request): Promise<any | null> {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
     const token = authHeader.split(' ')[1];
     return this.validated(token);
   }
 
-  async validated(token: string): Promise<boolean> {
+  async validated(token: string): Promise<any | null> {
     // Ví dụ: Kiểm tra OpenID Connect token (thay bằng logic thực tế, ví dụ gọi OpenID Connect provider)
     return token === 'valid_openid_token'; // Giả lập kiểm tra
   }

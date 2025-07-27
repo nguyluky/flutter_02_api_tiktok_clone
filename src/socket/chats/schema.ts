@@ -20,3 +20,5 @@ export class NewMessageEvent extends SocketEmitEvent<MessageData> {
         super('NewMessage', data, to);
     }
 }
+
+export const schema = [NewMessageEvent]

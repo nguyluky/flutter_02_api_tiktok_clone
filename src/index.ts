@@ -2,7 +2,7 @@
 import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
-import InitSocketIO from 'socket';
+import { setupSocketServer } from 'socket';
 import { Server } from 'socket.io';
 import env from './env';
 import { errorHandler } from './middleware/error';
@@ -18,7 +18,7 @@ const io = new Server(httpServer, {
         origin: "*",
     }
 })
-InitSocketIO(io);
+setupSocketServer(io);
 
 // app.use(exo)
 app.use(cors({

@@ -6,15 +6,12 @@
 
 import { UnauthorizedError, ZodBadRequestError } from "@utils/exception";
 import { expressToSwaggerPath } from "@utils/express2swaggerPath";
-import { accessTokenPayload, verifyAccessToken } from "@utils/jwt";
+import { accessTokenPayload } from "@utils/jwt";
 import { NextFunction, Request, Response, Router } from "express";
 import z, { globalRegistry } from "zod/v4";
 import { HTTP_INFO_KEY, HTTP_RESP_KEY, HttpInfo, RespData } from "./httpMethod";
 import { getContextType, toSchema } from "./type_declaration";
 import { ApiSchemas, SCHEMA_RES_KEY } from "./validate";
-import { http } from "winston";
-import { SecurityScheme } from "./BaseAuth";
-import { Logger } from "@utils/logger";
 
 export type RequestWithUser = accessTokenPayload;
 
