@@ -148,7 +148,9 @@ export function toSocketServer(
         // Apply auth middleware if required
         if (namespaceInfo.auth) {
             namespace.use(async (Socket, next) => {
+                // console.log(Socket.handshake);
                 for (const auth of namespaceInfo.auth!) {
+
                     const data = await auth.validate(Socket.handshake as any)
                     if (!data) {
                         return next(new UnauthorizedError("Authentication failed"));

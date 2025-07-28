@@ -3,6 +3,23 @@ import { SOCKET_EVENT_KEY, SOCKET_NAMESPACE_KEY, SocketEventInfo, SocketEventTyp
 import { toJsonSchema } from "./type_declaration";
 
 interface SocketDocumentation {
+    name: string;
+    description?: string;
+    version?: string;
+    servers?: {
+        url: string;
+        description?: string;
+    }[];
+    components?: {
+        // add references for schemas
+        schemas?: {
+            [schemaName: string]: any; // JSON Schema definitions
+        };
+        // TODO: add references for security schemes
+        securitySchemes?: {
+            [schemeName: string]: SecurityScheme;
+        };
+    };
     namespaces: {
         [path: string]: {
             description?: string;
@@ -22,8 +39,8 @@ interface SocketDocumentation {
     };
 }
 
-export function generateSocketDocs(controllers: any[]): SocketDocumentation {
-    const docs: SocketDocumentation = { namespaces: {} };
+export function generateSocketDocs(controllers: any[], name: string = "socket"): SocketDocumentation {
+    const docs: SocketDocumentation = { namespaces: {} , name};
     
     for (const ControllerClass of controllers) {
         const controller = new ControllerClass();
@@ -50,7 +67,7 @@ export function generateSocketDocs(controllers: any[]): SocketDocumentation {
             
             const eventName = eventInfo.eventName;
             
-            console.log(eventInfo)
+            // console.log(eventInfo)
             docs.namespaces[namespacePath].events[eventName] = {
                 direction: eventInfo.type,
                 description: eventInfo.description,

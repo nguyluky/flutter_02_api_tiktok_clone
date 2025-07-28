@@ -3,6 +3,7 @@ import prisma from "config/prisma.config";
 import { Socket } from "socket.io";
 import { SocketController, SocketEmitEvent } from "../../lib/socket_declaration";
 import {
+    SocketBidirectional,
     SocketEmit,
     SocketListen,
     SocketNamespace,
@@ -17,31 +18,22 @@ import { NewMessageEvent, SendMessageData } from "./schema";
 })
 export class SocketChatController extends SocketController {
 
-    useAuth(socket: any, next: any): void {
-        console.log("Authenticating socket connection...");
-        const token = socket.handshake.query.token as string;
 
-        if (!token) {
-            console.error("Authentication error: No token provided");
-            return next(new Error("Authentication error: No token provided"));
-        }
-
-        try {
-            const user = verifyAccessToken(token);
-            socket.data = user; // Store user data in socket
-            console.log("User authenticated:", user);
-            next();
-        }
-        catch (error) {
-            console.error("Authentication error:", error);
-            next(new Error("Authentication error: Invalid token"));
-        }
-    }
 
     onConnect(client: Socket): void {
         const userId = client.data.user.id;
         client.join(`/chat:${userId}`);
         console.log(`User ${userId} joined chat room`);
+    }
+
+    @SocketBidirectional('JoinRoom', {
+        description: 'Join a chat room',
+    })
+    @SocketRequest(SendMessageData)
+    @SocketResponse(SendMessageData)
+    test(client: Socket, data: { roomId: string }) {
+        console.log("Joining room", data);
+
     }
 
     @SocketListen('SendMessage', {

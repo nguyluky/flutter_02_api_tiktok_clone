@@ -17,7 +17,7 @@ function logAvailableRoutes(routerSchema: RouterSchema[], index: number = 0) {
             logAvailableRoutes(schema.subRouter!, index + 2);
         }
         else {
-            console.log(' '.repeat(index) + ` • ${schema.httpInfo.method.toUpperCase()} ${schema.httpInfo.path}`);
+            console.log(' '.repeat(index) + ` • ${schema.httpInfo.data?.isAuth ? '[' + schema.httpInfo.data?.isAuth?.map(e => e.constructor.name).join(', ') + ']' : ''} ${schema.httpInfo.method.toUpperCase()} ${schema.httpInfo.path}`);
         }
     }
 }

@@ -1,5 +1,6 @@
 import { generateSocketDocs } from "@lib/socket_docs_generator";
 import { SocketEventEmitter, toSocketRouterSchema, toSocketServer } from "@lib/toSocketRouter";
+import { writeFile } from "fs";
 import { SocketChatController } from "socket/chats/controller";
 import { SocketNotificationController } from "socket/notifications/controller";
 
@@ -16,7 +17,18 @@ export function setupSocketServer(io: any) {
     new SocketEventEmitter(io);
 
     // const asy
-    console.log(JSON.stringify(generateSocketDocs(socketControllers), null, 2));
+    const docs = generateSocketDocs(socketControllers);
+    docs.servers = [
+        {
+            url: "ws://localhost:3000",
+            description: "Local Socket Server",
+        }
+    ]
+    writeFile('./docs/socket.json', JSON.stringify(docs, null, 2), (err) => {
+        if (err) {
+            console.error("Error writing socket.json:", err);
+        }
+    })
 
     // Log available namespaces and events
     console.log(`Generated ${socketSchemas.length} socket namespaces`);
