@@ -39,7 +39,7 @@ export @ApiRequestStatus({
     @IsNumber()
     total: number;
 
-    @IsArray(toSchema(lastMessage))
+    @IsArray(toSchema(lastMessage)!)
     results: lastMessage[];
 
     constructor(data?: Partial<getListOfConverRes>) {

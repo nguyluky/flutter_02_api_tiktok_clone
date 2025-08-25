@@ -209,5 +209,9 @@ type SocketIOSchema = {
 
 ✅ **Tip**: Check each item as you go! You can use `[x]` to mark it done.
 
+
+TODO: 
+- [ ] create a new socket event emit 
+
 ---
 

@@ -35,5 +35,4 @@ export default class CommentsController {
 
         return new deleteCommentType.deleteCommentRes();
     }
-
 }

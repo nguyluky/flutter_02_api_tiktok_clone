@@ -172,9 +172,6 @@ npm run generate-module users
 # Thêm endpoint vào module có sẵn
 npm run add-endpoint users GetUserById
 
-# Build và generate docs
-npm run build
-npm run generate:docs
 ```
 
 ## 📁 Generated Files Structure

@@ -10,44 +10,6 @@
         }
       ],
       "events": {
-        "JoinRoom": {
-          "direction": "bidirectional",
-          "description": "Join a chat room",
-          "requestSchema": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string"
-              },
-              "recipientId": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "message",
-              "recipientId"
-            ],
-            "additionalProperties": false
-          },
-          "responseSchema": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string"
-              },
-              "recipientId": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "message",
-              "recipientId"
-            ],
-            "additionalProperties": false
-          }
-        },
         "SendMessage": {
           "direction": "client-to-server",
           "description": "Send a message to another user",
@@ -66,18 +28,58 @@
               "message",
               "recipientId"
             ],
-            "additionalProperties": false,
-            "id": "SendMessageData"
-          },
-          "example": {
-            "recipientId": "user123",
-            "message": "Hello there!"
+            "additionalProperties": false
           }
         },
         "NewMessage": {
           "direction": "server-to-client",
           "description": "New message received from another user",
-          "responseSchema": null
+          "responseSchema": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "senderId": {
+                "type": "string"
+              },
+              "recipientId": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "senderId",
+              "recipientId",
+              "message",
+              "timestamp"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "ReadMessage": {
+          "direction": "client-to-server",
+          "description": "Mark a message as read",
+          "requestSchema": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "properties": {
+              "messageId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "messageId"
+            ],
+            "additionalProperties": false
+          }
         }
       }
     },

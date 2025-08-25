@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "ts-node scripts/build.ts --production && tsc-alias && cp -r prisma dist && cp package.json dist",
-    "start:dev": "nodemon",
-    "start:prod": "node dist/index.js",
+    "watch": "ts-node scripts/watch.ts",
+    "dev": "concurrently \"ts-node scripts/watch.ts\" \"tsc-alias -w\" \"nodemon dist/index.js\"",
     "add_endpoint": "ts-node ./scripts/add-endpoint.ts",
     "add_model": "ts-node ./scripts/generate-model.ts"
   },

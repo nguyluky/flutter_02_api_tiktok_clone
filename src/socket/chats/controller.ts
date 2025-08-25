@@ -5,12 +5,14 @@ import { SocketController, SocketEmitEvent } from "../../lib/socket_declaration"
 import {
     SocketBidirectional,
     SocketEmit,
+    SocketEvent,
+    SocketEventType,
     SocketListen,
     SocketNamespace,
     SocketRequest,
     SocketResponse
 } from "../../lib/socket_decorators";
-import { NewMessageEvent, SendMessageData } from "./schema";
+import { NewMessageEvent, ReadMessageData, SendMessageData } from "./schema";
 
 @SocketNamespace('/chat', { 
     description: 'Real-time chat functionality',
@@ -18,27 +20,8 @@ import { NewMessageEvent, SendMessageData } from "./schema";
 })
 export class SocketChatController extends SocketController {
 
-
-
-    onConnect(client: Socket): void {
-        const userId = client.data.user.id;
-        client.join(`/chat:${userId}`);
-        console.log(`User ${userId} joined chat room`);
-    }
-
-    @SocketBidirectional('JoinRoom', {
-        description: 'Join a chat room',
-    })
-    @SocketRequest(SendMessageData)
-    @SocketResponse(SendMessageData)
-    test(client: Socket, data: { roomId: string }) {
-        console.log("Joining room", data);
-
-    }
-
     @SocketListen('SendMessage', {
         description: 'Send a message to another user',
-        example: { recipientId: "user123", message: "Hello there!" }
     })
     @SocketRequest(SendMessageData)
     async onSendMessage(client: Socket, data: SendMessageData) {
@@ -62,22 +45,40 @@ export class SocketChatController extends SocketController {
             }
         });
 
-        // Return event to emit to recipient
-        return new SocketEmitEvent('NewMessage', {
-            id: savedMessage.id,
-            senderId: userId,
-            recipientId: recipientId,
-            message: message,
-            timestamp: savedMessage.createdAt
-        }, recipientId); // Target specific user
+        return this.emitNewMessage(userId, recipientId, message, savedMessage);
     }
 
     @SocketEmit('NewMessage', {
         description: 'New message received from another user'
     })
     @SocketResponse(NewMessageEvent)
-    emitNewMessage() {
-        // This method defines the response schema for documentation
-        // Actual emission is handled by returning SocketEmitEvent from onSendMessage
+    emitNewMessage(userId: string, recipientId: string, message: string, savedMessage: any) {
+        return new SocketEmitEvent<NewMessageEvent>('NewMessage', {
+            id: savedMessage.id,
+            senderId: userId,
+            recipientId: recipientId,
+            message: message,
+            timestamp: savedMessage.createdAt
+        }, recipientId); // Target specific user
+
+    }
+
+    @SocketListen('ReadMessage', {
+        description: 'Mark a message as read',
+    })
+    @SocketRequest(ReadMessageData) 
+    async onReadMessage(client: Socket, data: ReadMessageData) {
+        
+        await prisma.message.updateMany({
+            where: {
+                id: data.messageId,
+                receiverId: client.data.user.id, // Ensure the user is the recipient
+                isSeen: false // Only update if not already seen
+            },
+            data: {
+                isSeen: true,
+            }
+        })
+
     }
 }

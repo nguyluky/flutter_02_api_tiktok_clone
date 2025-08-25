@@ -26,7 +26,7 @@ export @ApiRequestStatus({
 }) class getFollowingRes {
 
     userId: string;
-    @IsArray(toSchema(FollowingUser))
+    @IsArray(toSchema(FollowingUser)!)
     following: FollowingUser[];
 
     constructor(userId: string, following: FollowingUser[]) {

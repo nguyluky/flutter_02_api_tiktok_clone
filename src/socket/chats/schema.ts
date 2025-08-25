@@ -21,10 +21,21 @@ export class SendMessageData {
 
 
 // ==================
-export class NewMessageEvent extends SocketEmitEvent<MessageData> {
-    constructor(data: MessageData, to?: string | string[]) {
-        super('NewMessage', data, to);
-    }
+export class NewMessageEvent {
+    @IsString()
+    id: string;
+    @IsString()
+    senderId: string;
+    @IsString()
+    recipientId: string;
+    @IsString()
+    message: string;
+    @IsString()
+    timestamp: string;
 }
 
-export const schema = [NewMessageEvent]
+export class ReadMessageData {
+    @IsString()
+    messageId: string;
+}
+

@@ -2,7 +2,7 @@
 import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
-import { setupSocketServer } from 'socket';
+import { setupSocketServer } from './socket';
 import { Server } from 'socket.io';
 import env from './env';
 import { errorHandler } from './middleware/error';
@@ -32,10 +32,7 @@ app.use(requestLogger)
 app.use('/docs', swaggerRouter)
 
 app.use(apiRouter);
-app.get("/", (req, res) => {
-    res.send("hello") 
-})
-app.get("/health", (req, res) => {
+app.get("/health", (_, res) => {
     res.status(200).json({
         code: 200,
         message: 'OK',
@@ -43,7 +40,7 @@ app.get("/health", (req, res) => {
     })
 });
 
-app.use((req, res, next) => {
+app.use((req, res, _) => {
     res.status(404).json({
         code: 404,
         message: `Not Found - ${req.originalUrl} - ${req.method}`,

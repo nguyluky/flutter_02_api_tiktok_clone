@@ -117,35 +117,6 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         }
       }
@@ -216,64 +187,6 @@
                         "refreshToken"
                       ],
                       "additionalProperties": false
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -372,64 +285,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -640,13 +495,13 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-28T12:34:06.327Z",
+                          "default": "2025-08-14T12:46:57.719Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                         },
                         "updatedAt": {
-                          "default": "2025-07-28T12:34:06.327Z",
+                          "default": "2025-08-14T12:46:57.719Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -687,64 +542,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -841,35 +638,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -945,35 +713,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -1043,64 +782,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1207,64 +888,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -1358,35 +981,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1528,35 +1122,6 @@
                         "results"
                       ],
                       "additionalProperties": false
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -1805,35 +1370,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -1903,64 +1439,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2042,64 +1520,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -2169,64 +1589,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2329,64 +1691,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -2464,7 +1768,7 @@
                           "type": "string"
                         },
                         "createdAt": {
-                          "default": "2025-07-28T12:34:06.328Z",
+                          "default": "2025-08-14T12:46:57.720Z",
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
@@ -2509,64 +1813,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -2666,35 +1912,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         }
       }
@@ -2759,64 +1976,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []
@@ -3013,35 +2172,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -3217,35 +2347,6 @@
                 }
               }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
           }
         },
         "security": [
@@ -3296,35 +2397,6 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -3342,35 +2414,6 @@
                     "message": {
                       "type": "string",
                       "description": "Human-readable error message"
-                    }
-                  },
-                  "required": []
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "http://json-schema.org/draft-07/schema#",
-                  "title": "ApiErrorResponse",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "HTTP status code of the error",
-                      "minimum": 400,
-                      "maximum": 599
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Human-readable error message"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "Error class name"
                     }
                   },
                   "required": []

@@ -24,3 +24,4 @@ if (process.argv.includes('--production')) {
 }
 
 compile(compilerOptions.fileNames, compilerOptions.options);
+

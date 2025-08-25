@@ -14,7 +14,6 @@ const socketSchemas = toSocketRouterSchema(socketControllers);
 export function setupSocketServer(io: any) {
     // Setup socket server with generated schemas
     toSocketServer(io, socketSchemas);
-    new SocketEventEmitter(io);
 
     // const asy
     const docs = generateSocketDocs(socketControllers);

@@ -49,7 +49,7 @@ export @ApiRequestStatus({
     @IsNumber()
     totalPage: number;
 
-    @IsArray(toSchema(videosResItem))
+    @IsArray(toSchema(videosResItem)!)
     results: videosResItem[];
 
     constructor(data?: videosRes) {
